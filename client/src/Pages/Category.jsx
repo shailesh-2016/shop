@@ -8,7 +8,7 @@ const Category = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get(Meta.import.env.VITE_BASE_URL_CATEGORY);
+      const res = await axios.get(import.meta.env.VITE_BASE_URL_CATEGORY);
       console.log("Fetched Categories:", res.data);
       setCategories(res.data);
       setLoading(false);
@@ -27,7 +27,9 @@ const Category = () => {
       <div className="container my-5">
         <div className="text-center mb-4">
           <h1 className="fw-bold">Browse Categories</h1>
-          <p className="text-muted">Discover our exquisite collection by category</p>
+          <p className="text-muted">
+            Discover our exquisite collection by category
+          </p>
         </div>
 
         {loading ? (

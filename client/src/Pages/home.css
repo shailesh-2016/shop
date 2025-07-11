@@ -1,0 +1,9 @@
+.banner-img {
+  height: 90vh;
+  object-fit: cover;
+  filter: brightness(0.9);
+}
+
+.carousel-item {
+  transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+}
