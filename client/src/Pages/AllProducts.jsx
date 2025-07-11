@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ShoppingCart, Heart } from "lucide-react";
-import img5 from "../assets/image/img-5.jpg";
+import axios from "axios";
 import "../Pages/product.css";
+import { Link } from "react-router-dom";
 
 const ProductPage = () => {
   const [filters, setFilters] = useState({
@@ -11,12 +12,53 @@ const ProductPage = () => {
     materials: [],
   });
 
-  const allProducts = Array(6).fill({
-    name: "Gold Infinity Ring",
-    price: 1299,
-    image: img5,
-  });
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
+  // 🔁 Fetch products on mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/products");
+        setProducts(res.data.products || []);
+        setFilteredProducts(res.data.products || []);
+      } catch (err) {
+        console.error("❌ Failed to fetch products:", err);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  // ✅ Filter logic
+  const applyFilters = () => {
+    let filtered = [...products];
+
+    if (filters.categories.length > 0) {
+      filtered = filtered.filter((p) =>
+        filters.categories.includes(p.category?.cat_name)
+      );
+    }
+
+    if (filters.materials.length > 0) {
+      filtered = filtered.filter((p) => filters.materials.includes(p.material));
+    }
+
+    if (filters.minPrice !== "") {
+      filtered = filtered.filter(
+        (p) => Number(p.price) >= Number(filters.minPrice)
+      );
+    }
+
+    if (filters.maxPrice !== "") {
+      filtered = filtered.filter(
+        (p) => Number(p.price) <= Number(filters.maxPrice)
+      );
+    }
+
+    setFilteredProducts(filtered);
+  };
+
+  // ✅ Checkbox update handler
   const handleCheckboxChange = (type, value) => {
     setFilters((prev) => {
       const isChecked = prev[type].includes(value);
@@ -35,15 +77,24 @@ const ProductPage = () => {
       <p className="ps-3 text-muted">Home / All Products</p>
 
       <div className="row">
+        {/* Sidebar Filter */}
         <div className="col-md-3">
           <div className="p-3 border rounded">
             <h6 className="fw-bold">Categories</h6>
-            {["Rings", "Earrings", "Necklaces", "Bracelets", "Bangles", "Pendants"].map((cat) => (
+            {[
+              "Rings",
+              "Earrings",
+              "Necklaces",
+              "Bracelets",
+              "Bangles",
+              "Pendants",
+            ].map((cat) => (
               <div className="form-check" key={cat}>
                 <input
                   className="form-check-input"
                   type="checkbox"
                   id={cat}
+                  checked={filters.categories.includes(cat)}
                   onChange={() => handleCheckboxChange("categories", cat)}
                 />
                 <label className="form-check-label" htmlFor={cat}>
@@ -59,17 +110,26 @@ const ProductPage = () => {
                 placeholder="₹0"
                 className="form-control"
                 value={filters.minPrice}
-                onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, minPrice: e.target.value })
+                }
               />
               <input
                 type="number"
                 placeholder="₹2000"
                 className="form-control"
                 value={filters.maxPrice}
-                onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, maxPrice: e.target.value })
+                }
               />
             </div>
-            <button className="btn btn-primary mt-2 w-100">Apply</button>
+            <button
+              className="btn btn-primary mt-2 w-100"
+              onClick={applyFilters}
+            >
+              Apply
+            </button>
 
             <h6 className="fw-bold mt-4">Material</h6>
             {["18K Gold", "22K Gold", "Rose Gold", "White Gold"].map((mat) => (
@@ -78,6 +138,7 @@ const ProductPage = () => {
                   className="form-check-input"
                   type="checkbox"
                   id={mat}
+                  checked={filters.materials.includes(mat)}
                   onChange={() => handleCheckboxChange("materials", mat)}
                 />
                 <label className="form-check-label" htmlFor={mat}>
@@ -88,30 +149,43 @@ const ProductPage = () => {
           </div>
         </div>
 
+        {/* Product Grid */}
         <div className="col-md-9">
-          <div className="row row-cols-1 row-cols-md-3 g-4">
-            {allProducts.map((product, index) => (
-              <div className="col" key={index}>
-                <div className="card border h-100 card-hover-group">
+          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+            {filteredProducts.map((product, index) => (
+              <div className="col d-flex" key={index}>
+                <div className="card border w-100 card-hover-group">
                   <div className="position-relative">
-                    <img src={product.image} className="card-img-top" alt={product.name} />
+                    <img
+                      src={product.product_images?.[0]}
+                      className="card-img-top"
+                      alt={product.product_name}
+                    />
 
                     <button className="btn btn-light rounded-circle shadow-sm hover-buttons">
                       <Heart size={18} />
                     </button>
 
-                    <button className="btn btn-primary w-100 hover-cart-btn d-flex align-items-center justify-content-center gap-2">
-                      <ShoppingCart size={16} /> Add to Cart
-                    </button>
+                    <Link
+                      to={`/details/${product._id}`}
+                      className="btn btn-primary w-100 hover-cart-btn d-flex align-items-center justify-content-center gap-2"
+                    >
+                      <ShoppingCart size={16} /> View Details
+                    </Link>
                   </div>
 
                   <div className="card-body text-center">
-                    <h6 className="card-title">{product.name}</h6>
-                    <p className="card-text text-primary fw-semibold">₹{product.price.toFixed(2)}</p>
+                    <h6 className="card-title">{product.product_name}</h6>
+                    <p className="card-text text-primary fw-semibold">
+                      ₹{Number(product.price).toFixed(2)}
+                    </p>
                   </div>
                 </div>
               </div>
             ))}
+            {filteredProducts.length === 0 && (
+              <p className="text-center">No products found.</p>
+            )}
           </div>
         </div>
       </div>

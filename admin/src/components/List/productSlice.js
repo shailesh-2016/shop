@@ -1,59 +1,75 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { data } from 'autoprefixer'
 import axios from 'axios'
 
-const Product_URL = 'http://localhost:5000/Product'
+const Product_URL = 'http://localhost:8000/api/products' // 🔁 update URL if needed
 
+// ✅ Add Product
 export const addPro = createAsyncThunk('product/addPro', async (data) => {
   const res = await axios.post(Product_URL, data)
-  console.log(res.data)
   return res.data
 })
+
+// ✅ View All Products
 export const viewPro = createAsyncThunk('product/viewPro', async () => {
   const res = await axios.get(Product_URL)
-  return res.data
+  return res.data.products // ✅ as per controller structure
 })
+
+// ✅ Delete Product
 export const delPro = createAsyncThunk('product/delPro', async (id) => {
   await axios.delete(`${Product_URL}/${id}`)
   return id
 })
-export const editPro = createAsyncThunk('product/editPro', async (data) => {
-  const { id } = data
-  await axios.put(`${Product_URL}/${id}`, data)
+
+// ✅ Edit Product
+export const editPro = createAsyncThunk('product/editPro', async ({ id, formData }) => {
+  const res = await axios.put(`${Product_URL}/${id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+  return res.data.product
 })
+
 
 const initialState = {
   productList: [],
+  loading: false,
+  error: null,
 }
 
-export const productSlice = createSlice({
+const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
+
+      // ➕ Add
       .addCase(addPro.fulfilled, (state, action) => {
         state.productList.push(action.payload)
       })
+
+      // 👁 View
       .addCase(viewPro.fulfilled, (state, action) => {
         state.productList = action.payload
       })
+
+      // ❌ Delete
       .addCase(delPro.fulfilled, (state, action) => {
         const id = action.payload
-        const filterData = state.productList.filter((user) => {
-          return user.id !== id
-        })
-        state.productList = filterData
+        state.productList = state.productList.filter((item) => item._id !== id)
       })
+
+      // ✏️ Edit
       .addCase(editPro.fulfilled, (state, action) => {
-        const id = action.payload
-        const pro_num = state.productList.findIndex((user) => {
-          return user.id == id
-        })
-        if (pro_num != -1) {
-          state.productList[pro_num] = action.payload
+        const updated = action.payload
+        const index = state.productList.findIndex((item) => item._id === updated._id)
+        if (index !== -1) {
+          state.productList[index] = updated
         }
       })
   },
 })
+
 export default productSlice.reducer

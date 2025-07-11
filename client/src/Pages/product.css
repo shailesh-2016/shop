@@ -30,3 +30,28 @@
 .card-hover-group:hover .hover-cart-btn {
   opacity: 1;
 }
+
+
+.card-hover-group {
+  height: 100%; /* Let Bootstrap grid handle height */
+  display: flex;
+  flex-direction: column;
+}
+
+.card-img-top {
+  object-fit: cover;
+  height: 250px;
+  width: 100%;
+}
+
+.card-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.card-hover-group:hover {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
+

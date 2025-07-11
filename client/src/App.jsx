@@ -9,6 +9,8 @@ import Home from "./Pages/Home";
 import ContactUs from "./Pages/Contact";
 import SignupForm from "./Pages/Signup";
 import LoginPage from "./Pages/Login";
+import ProductDetails from "./Pages/ProductDetails";
+import CartPage from "./Pages/Cart";
 
 const AppContent = () => {
   const location = useLocation();
@@ -27,6 +29,8 @@ const AppContent = () => {
         <Route path="/category" element={<CategoryGrid />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="/details/:id" element={<ProductDetails />} />
+        <Route path="/cart" element={<CartPage />} />
       </Routes>
 
       {!hideHeaderFooter && <Footer />}

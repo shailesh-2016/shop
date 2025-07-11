@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react'
 import {
   CForm,
   CFormLabel,
@@ -9,139 +8,174 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
+  CFormCheck,
 } from '@coreui/react'
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { editPro, viewPro } from '../productSlice'
-import axios from 'axios'
+import { viewCat } from '../userSlice'
 import Swal from 'sweetalert2'
 
 const Edit = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { id } = useParams()
+
+  const { productList } = useSelector((state) => state.product)
+  const { userList } = useSelector((state) => state.users)
+
   const {
     register,
     handleSubmit,
-    reset,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm()
-  const dispatch = useDispatch()
 
-  const { id } = useParams()
-  const redirect = useNavigate()
-  const { productList } = useSelector((state) => state.product)
-
-  console.log(productList)
-
-  const single = productList.find((user) => {
-    return user.id == id
-  })
-
-  function edit(data) {
-    dispatch(editPro(data))
-    Swal.fire({
-      position: 'top-center',
-      icon: 'success',
-      title: 'Product data Updated!',
-      showConfirmButton: false,
-      timer: 1500,
-    })
-    redirect('/PRODUCT/View Product')
-  }
   useEffect(() => {
     dispatch(viewPro())
-    reset(single)
+    dispatch(viewCat())
   }, [dispatch])
 
+  const single = productList.find((p) => p._id === id)
+
+  useEffect(() => {
+    if (single) {
+      setValue('category', single.category?._id || single.category) // handle both object or string
+      setValue('product_name', single.product_name)
+      setValue('product_description', single.product_description)
+      setValue('price', single.price)
+      setValue('discount_price', single.discount_price)
+      setValue('material', single.material)
+      setValue('quantity', single.quantity)
+    }
+  }, [single, setValue])
+
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData()
+
+      for (let i = 0; i < (data.product_images?.length || 0); i++) {
+        formData.append('product_images', data.product_images[i])
+      }
+
+      formData.append('category', data.category)
+      formData.append('product_name', data.product_name)
+      formData.append('product_description', data.product_description)
+      formData.append('price', data.price)
+      formData.append('discount_price', data.discount_price || 0)
+      formData.append('material', data.material)
+      formData.append('quantity', data.quantity)
+
+      await dispatch(editPro({ id, formData }))
+
+      Swal.fire({
+        position: 'top-center',
+        icon: 'success',
+        title: '✅ Product Updated',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+
+      navigate('/PRODUCT/View Product')
+    } catch (err) {
+      console.error('❌ Edit failed:', err)
+    }
+  }
+
   return (
-    <>
-      <div className="container mt-5">
-        <CCard>
-          <CCardHeader>
-            <h2>Update Product</h2>
-          </CCardHeader>
-          <CCardBody>
-            <CForm onSubmit={handleSubmit(edit)}>
-              <div className="mb-3">
-                <CFormLabel htmlFor="category">Category</CFormLabel>
-                <CFormSelect
-                  id="category"
-                  name="category"
-                  {...register('category', { required: 'Category is required' })}
-                >
-                  <option value="">-- Select Category --</option>
-                  {productList.map((cat) => (
-                    <option key={cat.id} value={cat.categoryNam}>
-                      {cat.category}
-                    </option>
-                  ))}
-                </CFormSelect>
-                {errors.category && <p className="text-danger">{errors.category.message}</p>}
-              </div>
+    <div className="container mt-5">
+      <CCard>
+        <CCardHeader>
+          <h2>Update Product</h2>
+        </CCardHeader>
+        <CCardBody>
+          <CForm onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+            {/* Category */}
+            <div className="mb-3">
+              <CFormLabel>Category</CFormLabel>
+              <CFormSelect {...register('category', { required: 'Category is required' })}>
+                <option value="">-- Select Category --</option>
+                {userList.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.cat_name}
+                  </option>
+                ))}
+              </CFormSelect>
 
-              <div className="mb-3">
-                <CFormLabel htmlFor="name">Product Name</CFormLabel>
-                <CFormInput
-                  type="text"
-                  id="name"
-                  name="name"
-                  {...register('productName', { required: 'Product Name is required' })}
-                />
-                {errors.name && <p className="text-danger">{errors.name.message}</p>}
-              </div>
+              {errors.category && <p className="text-danger">{errors.category.message}</p>}
+            </div>
 
-              <div className="mb-3">
-                <CFormLabel htmlFor="price">Price</CFormLabel>
-                <CFormInput
-                  type="number"
-                  id="price"
-                  name="price"
-                  {...register('Price', {
-                    required: 'Price is required',
-                    valueAsNumber: true,
-                    min: {
-                      value: 1,
-                      message: 'Price should be at least 1',
-                    },
-                  })}
-                />
-                {errors.price && <p className="text-danger">{errors.price.message}</p>}
-              </div>
+            {/* Product Name */}
+            <div className="mb-3">
+              <CFormLabel>Product Name</CFormLabel>
+              <CFormInput {...register('product_name', { required: 'Product Name is required' })} />
+              {errors.product_name && <p className="text-danger">{errors.product_name.message}</p>}
+            </div>
 
-              <div className="mb-3">
-                <CFormLabel htmlFor="description">Description</CFormLabel>
-                <CFormTextarea
-                  id="description"
-                  name="description"
-                  rows="4"
-                  {...register('Description', {
-                    required: 'Description is required',
-                    minLength: {
-                      value: 10,
-                      message: 'Description must be at least 10 characters',
-                    },
-                  })}
-                />
-                {errors.description && <p className="text-danger">{errors.description.message}</p>}
-              </div>
-              <div className="mb-3">
-                <CFormLabel htmlFor="Image">Upload Image</CFormLabel>
-                <CFormInput
-                  id="image"
-                  type="file"
-                  {...register('image', )}
-                  className={`form-control ${errors.image ? 'is-invalid' : ''}`}
-                />
-                {errors.categoryName && <CAlert color="danger">{errors.Image.message}</CAlert>}
-              </div>
+            {/* Description */}
+            <div className="mb-3">
+              <CFormLabel>Description</CFormLabel>
+              <CFormTextarea
+                rows="3"
+                {...register('product_description', { required: 'Description is required' })}
+              />
+              {errors.product_description && (
+                <p className="text-danger">{errors.product_description.message}</p>
+              )}
+            </div>
 
-              <CButton type="submit" color="warning">
-                Update
-              </CButton>
-            </CForm>
-          </CCardBody>
-        </CCard>
-      </div>
-    </>
+            {/* Price */}
+            <div className="mb-3">
+              <CFormLabel>Price</CFormLabel>
+              <CFormInput type="number" {...register('price', { required: 'Price is required' })} />
+              {errors.price && <p className="text-danger">{errors.price.message}</p>}
+            </div>
+
+            {/* Discount Price */}
+            <div className="mb-3">
+              <CFormLabel>Discount Price</CFormLabel>
+              <CFormInput type="number" {...register('discount_price')} />
+            </div>
+
+            {/* Material */}
+            <div className="mb-3">
+              <CFormLabel>Material</CFormLabel>
+              <CFormSelect {...register('material', { required: 'Material is required' })}>
+                <option value="">-- Select Material --</option>
+                <option value="18K Gold">18K Gold</option>
+                <option value="22K Gold">22K Gold</option>
+                <option value="Rose Gold">Rose Gold</option>
+                <option value="White Gold">White Gold</option>
+              </CFormSelect>
+              {errors.material && <p className="text-danger">{errors.material.message}</p>}
+            </div>
+
+            {/* Quantity */}
+            <div className="mb-3">
+              <CFormLabel>Quantity</CFormLabel>
+              <CFormInput
+                type="number"
+                {...register('quantity', { required: 'Quantity is required' })}
+              />
+              {errors.quantity && <p className="text-danger">{errors.quantity.message}</p>}
+            </div>
+
+            {/* Product Images */}
+            <div className="mb-3">
+              <CFormLabel>Upload Product Images</CFormLabel>
+              <CFormInput type="file" multiple accept="image/*" {...register('product_images')} />
+            </div>
+
+            <CButton type="submit" color="warning">
+              Update
+            </CButton>
+          </CForm>
+        </CCardBody>
+      </CCard>
+    </div>
   )
 }
 

@@ -1,63 +1,58 @@
-const mongoose = require("mongoose");
+// models/Product.js
+const mongoose = require('mongoose');
 
-const productSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-    price: {
-      type: Number,
-      required: true,
-    },
-    images: [
-      {
-        url: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
-    materials: {
-      type: [String],
-      required: true,
-    },
-    sizes: {
-      type: [String],
-      default: ["S", "M", "L"],
-    },
-    ratings: {
-      type: Number,
-      default: 0,
-    },
-    numReviews: {
-      type: Number,
-      default: 0,
-    },
-    stock: {
-      type: Number,
-      default: 1,
-    },
-    warranty: {
-      type: String,
-      default: "2-year warranty on all products",
-    },
-    shippingInfo: {
-      type: String,
-      default: "Free shipping on orders over $499",
-    },
-    returnPolicy: {
-      type: String,
-      default: "30-day return policy",
-    },
+const productSchema = new mongoose.Schema({
+  product_name: {
+    type: String,
+    required: true,
   },
-  {
-    timestamps: true,
-  }
-);
+  product_description: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  discount_price: {
+    type: Number,
+  },
+  product_images: {
+    type: [String], // Multiple image URLs
+    required: true,
+  },
+  material: {
+    type: String, // Example: 18K Gold, 22K Gold
+    required: true,
+  },
+  size: {
+    type: [String], // Example: ["XS", "S", "M", "L", "XL"]
+  },
+  quantity: {
+    type: Number,
+    default: 1,
+  },
 
-module.exports = mongoose.model("Product", productSchema);
+  // 👇 Category Reference
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: true,
+  },
+
+  // Extras
+  reviews: {
+    type: Number,
+    default: 0,
+  },
+  rating: {
+    type: Number,
+    default: 0,
+  },
+  isAvailable: {
+    type: Boolean,
+    default: true,
+  },
+}, { timestamps: true });
+
+module.exports = mongoose.model('Product', productSchema);

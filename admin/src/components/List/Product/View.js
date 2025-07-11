@@ -75,36 +75,50 @@ const View = () => {
                   <CTableHeaderCell scope="col">Action</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
-              <CTableBody>
-                {productList.map((product, index) => (
-                  <CTableRow key={product.id}>
-                    <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
-                    <CTableDataCell>{product.category}</CTableDataCell>
-                    <CTableDataCell>{product.productName}</CTableDataCell>
-                    <CTableDataCell>{product.Price}</CTableDataCell>
-                    <CTableDataCell>{product.Description}</CTableDataCell>
-                    <CTableDataCell>
-                      {' '}
-                      <img width={100} src={product.Image} alt="" />{' '}
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <CButton
-                        className="btn btn-outline-danger ms-1"
-                        size="sm"
-                        onClick={() => trash(product.id)}
-                      >
-                        <i class="fa-solid fa-xmark"></i>
-                      </CButton>
-                      <NavLink
-                        to={`/edit/${product.id}`}
-                        className="btn btn-outline-warning btn-sm ms-2"
-                      >
-                        <i class="fa-solid fa-pen-to-square"></i>
-                      </NavLink>
-                    </CTableDataCell>
-                  </CTableRow>
-                ))}
-              </CTableBody>
+             <CTableBody>
+  {productList.map((product, index) => (
+    <CTableRow key={product._id}>
+      <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
+
+      {/* CATEGORY */}
+      <CTableDataCell>{product.category?.cat_name}</CTableDataCell>
+
+      {/* NAME */}
+      <CTableDataCell>{product.product_name}</CTableDataCell>
+
+      {/* PRICE */}
+      <CTableDataCell>{product.price}</CTableDataCell>
+
+      {/* DESCRIPTION */}
+      <CTableDataCell>{product.product_description}</CTableDataCell>
+
+      {/* IMAGE */}
+      <CTableDataCell>
+        {product.product_images && product.product_images.length > 0 && (
+          <img width={100} src={product.product_images[0]} alt="Product" />
+        )}
+      </CTableDataCell>
+
+      {/* ACTION */}
+      <CTableDataCell>
+        <CButton
+          className="btn btn-outline-danger ms-1"
+          size="sm"
+          onClick={() => trash(product._id)}
+        >
+          <i className="fa-solid fa-xmark"></i>
+        </CButton>
+        <NavLink
+          to={`/edit/${product._id}`}
+          className="btn btn-outline-warning btn-sm ms-2"
+        >
+          <i className="fa-solid fa-pen-to-square"></i>
+        </NavLink>
+      </CTableDataCell>
+    </CTableRow>
+  ))}
+</CTableBody>
+
             </CTable>
           </CCardBody>
         </CCard>
