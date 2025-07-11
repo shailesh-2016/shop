@@ -1,0 +1,40 @@
+.navbar-upper .navbar {
+  background-color: #9d4be0 !important;
+}
+.navbar-lower .navbar {
+  background-color: #ffffff !important;
+}
+.navbar-lower a{
+  color: black !important;
+  text-decoration: none;
+  margin: 10px;
+}
+.navbar-upper .navbar a {
+  color: #ffffff !important;
+  font-weight: lighter;
+}
+
+
+.navbar-lower .nav-link {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.navbar-lower .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  background-color: #9d4be0;
+  bottom: 0;
+  left: 0;
+  transition: width 0.3s ease;
+}
+
+.navbar-lower .nav-link:hover {
+  color: #9d4be0 !important;
+}
+
+.navbar-lower .nav-link:hover::after {
+  width: 100%;
+}

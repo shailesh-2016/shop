@@ -1,0 +1,22 @@
+{
+  "Category": [
+    {
+      "id": "fc24",
+      "categoryName": "iPhone"
+    },
+    {
+      "id": "0861",
+      "categoryName": "Rings"
+    }
+  ],
+  "Product": [
+    {
+      "id": "163c",
+      "productName": "ring",
+      "category": "Rings",
+      "Price": 120,
+      "Description": "dfdfdfeefdfdfdfgf",
+      "Image": "https://res.cloudinary.com/dguyjd0no/image/upload/v1752125790/sqeytdneui4f5xfe0uus.avif"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+const {register,handleSubmit,reset,formState:{errors}}=useForm()
+const dispatch=useDispatch()
+const convertToBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+
+  
+  async function product(data) {
+    const base64Image = await convertToBase64(data.image[0]);
+    const payload = {
+      productName: data.name,
+      category: data.category,
+      Price: data.price,
+      Description: data.description,
+      Image: base64Image,
+    };
+    try {
+      dispatch(addPro(payload))
+      alert("Data submitted successfully!");
+      reset();
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  ////
+
+
+  // const convertToBase64 = (file) =>
+//   new Promise((resolve, reject) => {
+//     const reader = new FileReader();
+//     reader.readAsDataURL(file);
+//     reader.onload = () => resolve(reader.result);
+//     reader.onerror = (error) => reject(error);
+//   });
+
+  
+  // async function product(data) {
+  //   const base64Image = await convertToBase64(data.image[0]);
+  //   const payload = {
+  //     productName: data.name,
+  //     category: data.category,
+  //     Price: data.price,
+  //     Description: data.description,
+  //     Image: base64Image,
+  //   };
+  //   try {
+  //     dispatch(addPro(payload))
+  //     alert("Data submitted successfully!");
+  //     reset();
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
+// function product(data){
+//   dispatch(addPro(data))
+//   Swal.fire({
+//         position: "top-center",
+//         icon: "success",
+//         title: "Product Added Successfully!",
+//         showConfirmButton: false,
+//         timer: 1500
+//       });
+  
+// }

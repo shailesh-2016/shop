@@ -1,0 +1,32 @@
+.card-hover-group {
+  position: relative;
+  overflow: hidden;
+}
+
+.hover-buttons {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 2;
+  background-color: #9d4be0 !important;
+  color: white !important;
+}
+
+.hover-cart-btn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 2;
+    background-color: #9d4be0 !important;
+
+}
+
+.card-hover-group:hover .hover-buttons,
+.card-hover-group:hover .hover-cart-btn {
+  opacity: 1;
+}
