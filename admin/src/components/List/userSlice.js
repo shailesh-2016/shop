@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8000/api/category'
+const API_URL = import.meta.env.VITE_BASE_URL
 
 export const addCat = createAsyncThunk('user/addCat', async (formData) => {
   const res = await axios.post(API_URL, formData, {
