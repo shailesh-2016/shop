@@ -1,8 +1,16 @@
+// src/Pages/ProductPage.jsx
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Heart } from "lucide-react";
 import axios from "axios";
 import "../Pages/product.css";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToWishlist,
+  removeFromWishlist,
+  getWishlist,
+} from "../redux/wish-list/listSlice";
+import { toast } from "react-toastify";
 
 const ProductPage = () => {
   const [filters, setFilters] = useState({
@@ -15,7 +23,10 @@ const ProductPage = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
-  // 🔁 Fetch products on mount
+  const dispatch = useDispatch();
+  const wishlistItems = useSelector((state) => state.wishlist.items);
+
+  // ✅ Load products & wishlist
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -27,9 +38,9 @@ const ProductPage = () => {
       }
     };
     fetchProducts();
-  }, []);
+    dispatch(getWishlist());
+  }, [dispatch]);
 
-  // ✅ Filter logic
   const applyFilters = () => {
     let filtered = [...products];
 
@@ -40,7 +51,9 @@ const ProductPage = () => {
     }
 
     if (filters.materials.length > 0) {
-      filtered = filtered.filter((p) => filters.materials.includes(p.material));
+      filtered = filtered.filter((p) =>
+        filters.materials.includes(p.material)
+      );
     }
 
     if (filters.minPrice !== "") {
@@ -58,7 +71,6 @@ const ProductPage = () => {
     setFilteredProducts(filtered);
   };
 
-  // ✅ Checkbox update handler
   const handleCheckboxChange = (type, value) => {
     setFilters((prev) => {
       const isChecked = prev[type].includes(value);
@@ -71,24 +83,37 @@ const ProductPage = () => {
     });
   };
 
+  // ✅ Wishlist logic
+  const isInWishlist = (id) => {
+    return wishlistItems.some((item) => item._id === id);
+  };
+
+ const toggleWishlist = async (product) => {
+  try {
+    if (isInWishlist(product._id)) {
+      toast.info("Removed from wishlist");
+      await dispatch(removeFromWishlist(product._id)).unwrap();
+    } else {
+      toast.success("Added to wishlist");
+      await dispatch(addToWishlist(product)).unwrap();
+    }
+  } catch (err) {
+    toast.error("Something went wrong!");
+  }
+};
+
+
   return (
     <div className="container-fluid py-4">
       <h4 className="fw-bold ps-3">All Products</h4>
       <p className="ps-3 text-muted">Home / All Products</p>
 
       <div className="row">
-        {/* Sidebar Filter */}
+        {/* Sidebar Filters */}
         <div className="col-md-3">
           <div className="p-3 border rounded">
             <h6 className="fw-bold">Categories</h6>
-            {[
-              "Rings",
-              "Earrings",
-              "Necklaces",
-              "Bracelets",
-              "Bangles",
-              "Pendants",
-            ].map((cat) => (
+            {["Rings", "Earrings", "Necklaces", "Bracelets", "Bangles", "Pendants"].map((cat) => (
               <div className="form-check" key={cat}>
                 <input
                   className="form-check-input"
@@ -149,7 +174,7 @@ const ProductPage = () => {
           </div>
         </div>
 
-        {/* Product Grid */}
+        {/* Product Cards */}
         <div className="col-md-9">
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
             {filteredProducts.map((product, index) => (
@@ -162,8 +187,19 @@ const ProductPage = () => {
                       alt={product.product_name}
                     />
 
-                    <button className="btn btn-light rounded-circle shadow-sm hover-buttons">
-                      <Heart size={18} />
+                    {/* ❤️ Wishlist Button */}
+                    <button
+                      className={`wishlist-btn ${
+                        isInWishlist(product._id) ? "active" : ""
+                      }`}
+                      onClick={() => toggleWishlist(product)}
+                      aria-label="Add to wishlist"
+                    >
+                      <Heart
+                        size={18}
+                        color={isInWishlist(product._id) ? "#e63946" : "#333"}
+                        fill={isInWishlist(product._id) ? "#e63946" : "none"}
+                      />
                     </button>
 
                     <Link

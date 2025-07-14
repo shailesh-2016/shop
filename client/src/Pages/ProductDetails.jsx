@@ -1,9 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Form,
+  Tab,
+  Tabs,
+  Card,
+} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../redux/cart-slice/cartSlice";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ReviewModal from "../components/ReviewModel";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -14,35 +26,54 @@ const ProductDetail = () => {
   const [qty, setQty] = useState(1);
   const [material, setMaterial] = useState("");
   const [size, setSize] = useState("");
+  const [reviews, setReviews] = useState([]);
+  const [showReviewModal, setShowReviewModal] = useState(false);
 
-  // ✅ Get userId from Redux auth slice
+  const [reviewForm, setReviewForm] = useState({
+    userName: "",
+    rating: 5,
+    comment: "",
+  });
+
   const user = useSelector((state) => state.auth.user);
   const userId = user?.id;
 
-  // ✅ Fetch product
+  // Load product and reviews
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const res = await axios.get(`http://localhost:8000/api/products/${id}`);
         setProduct(res.data.product);
       } catch (err) {
-        console.error("Failed to load product", err);
+        toast.error("Failed to load product");
+      }
+    };
+
+    const fetchReviews = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8000/api/products/${id}/review`);
+        setReviews(res.data.reviews);
+      } catch (err) {
+        toast.error("Failed to load reviews");
       }
     };
 
     fetchProduct();
+    fetchReviews();
   }, [id]);
 
-  // ✅ Add to Cart
+  useEffect(() => {
+    if (user?.name) {
+      setReviewForm((prev) => ({ ...prev, userName: user.name }));
+    }
+  }, [user]);
+
   const handleAddToCart = () => {
     if (!userId) {
-      alert("Please login to add to cart");
+      toast.warn("Please login to add to cart");
       return navigate("/login");
     }
-
-    if (!size || !material) {
-      return alert("Please select both material and size.");
-    }
+    if (!size || !material) return toast.error("Select size & material");
 
     const cartItem = {
       userId,
@@ -52,10 +83,34 @@ const ProductDetail = () => {
       size,
     };
 
-    dispatch(addToCart(cartItem));
-    alert("Added to cart ✅");
-    navigate("/cart");
+    dispatch(addToCart(cartItem))
+      .unwrap()
+      .then(() => {
+        toast.success("Added to cart ✅");
+        navigate("/cart");
+      })
+      .catch(() => toast.error("Failed to add to cart"));
   };
+
+const handleReviewSubmit = async () => {
+  const reviewData = {
+    userId: user?._id,
+    name: user?.name,
+    rating: parseInt(rating),  // ✅ Make sure it's a Number
+    comment,
+  };
+
+  try {
+    const res = await axios.post(
+      `http://localhost:8000/api/products/${id}/review`,
+      reviewData
+    );
+    console.log(res.data);
+  } catch (err) {
+    console.error("❌ Review error", err.response?.data || err.message);
+  }
+};
+
 
   if (!product) return <p className="text-center mt-5">Loading...</p>;
 
@@ -67,15 +122,16 @@ const ProductDetail = () => {
             src={product.product_images[0]}
             alt="Main"
             className="img-fluid border rounded mb-3"
+            style={{ maxHeight: "300px", objectFit: "cover" }}
           />
-          <div className="d-flex gap-2">
+          <div className="d-flex gap-2 flex-wrap">
             {product.product_images.map((img, index) => (
               <img
                 key={index}
                 src={img}
-                alt={`Thumb ${index}`}
+                alt={`thumb-${index}`}
                 className="img-thumbnail"
-                style={{ height: "80px", width: "80px", objectFit: "cover" }}
+                style={{ height: "60px", width: "60px", objectFit: "cover" }}
               />
             ))}
           </div>
@@ -90,18 +146,17 @@ const ProductDetail = () => {
           {/* Material */}
           <Form.Group className="mb-3">
             <Form.Label>Material</Form.Label>
-            <div>
-              {["18K Gold", "22K Gold", "Rose Gold"].map((mat) => (
-                <Form.Check
-                  inline
-                  key={mat}
-                  type="radio"
-                  label={mat}
-                  name="material"
-                  onChange={() => setMaterial(mat)}
-                />
-              ))}
-            </div>
+            {["18K Gold", "22K Gold", "Rose Gold"].map((mat) => (
+              <Form.Check
+                inline
+                key={mat}
+                label={mat}
+                name="material"
+                type="radio"
+                onChange={() => setMaterial(mat)}
+                checked={material === mat}
+              />
+            ))}
           </Form.Group>
 
           {/* Size */}
@@ -131,9 +186,8 @@ const ProductDetail = () => {
             </div>
           </Form.Group>
 
-          {/* Action */}
           <div className="d-flex gap-3 mt-4">
-            <Button variant="primary" className="w-50" onClick={handleAddToCart}>
+            <Button className="w-50" onClick={handleAddToCart}>
               ADD TO CART
             </Button>
             <Button variant="outline-secondary" className="w-50">
@@ -142,6 +196,65 @@ const ProductDetail = () => {
           </div>
         </Col>
       </Row>
+
+      {/* Tabs */}
+      <Tabs defaultActiveKey="description" className="mt-5">
+        <Tab eventKey="description" title="Description">
+          <p className="mt-3">{product.product_description}</p>
+        </Tab>
+
+        <Tab eventKey="reviews" title={`Reviews (${reviews.length})`}>
+          <Row className="mt-4">
+            <Col md={6}>
+              <h5>Write a Review</h5>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  if (!userId) {
+                    toast.warn("Please login to write a review");
+                    navigate("/login");
+                  } else {
+                    setShowReviewModal(true);
+                  }
+                }}
+              >
+                + Add Review
+              </Button>
+            </Col>
+
+            <Col md={6}>
+              <h5 className="mb-3">Customer Reviews</h5>
+              {reviews.length === 0 ? (
+                <p>No reviews yet</p>
+              ) : (
+                reviews.map((rev, i) => (
+                  <Card key={i} className="mb-3">
+                    <Card.Body>
+                      <Card.Title>{rev.name}</Card.Title>
+                      <Card.Subtitle className="mb-2 text-muted">
+                        ⭐ {rev.rating} -{" "}
+                        {new Date(rev.createdAt).toLocaleDateString()}
+                      </Card.Subtitle>
+                      <Card.Text>{rev.comment}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                ))
+              )}
+            </Col>
+          </Row>
+        </Tab>
+      </Tabs>
+
+      {/* Review Modal */}
+      <ReviewModal
+        show={showReviewModal}
+        handleClose={() => setShowReviewModal(false)}
+        reviewForm={reviewForm}
+        setReviewForm={setReviewForm}
+        handleReviewSubmit={handleReviewSubmit}
+      />
+
+      <ToastContainer position="top-right" autoClose={2500} theme="colored" />
     </Container>
   );
 };

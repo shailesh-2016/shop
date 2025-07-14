@@ -1,58 +1,44 @@
-// models/Product.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema({
-  product_name: {
-    type: String,
-    required: true,
-  },
-  product_description: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  discount_price: {
-    type: Number,
-  },
-  product_images: {
-    type: [String], // Multiple image URLs
-    required: true,
-  },
-  material: {
-    type: String, // Example: 18K Gold, 22K Gold
-    required: true,
-  },
-  size: {
-    type: [String], // Example: ["XS", "S", "M", "L", "XL"]
-  },
-  quantity: {
-    type: Number,
-    default: 1,
-  },
-
-  // 👇 Category Reference
-  category: {
+const reviewSchema = new mongoose.Schema({
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
+    ref: "User",
     required: true,
   },
-
-  // Extras
-  reviews: {
-    type: Number,
-    default: 0,
+  name: {
+    type: String,
+    required: true,
   },
   rating: {
     type: Number,
-    default: 0,
+    required: true,
+    min: 1,
+    max: 5,
   },
-  isAvailable: {
-    type: Boolean,
-    default: true,
+  comment: {
+    type: String,
+    required: true,
   },
-}, { timestamps: true });
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-module.exports = mongoose.model('Product', productSchema);
+const productSchema = new mongoose.Schema(
+  {
+    product_name: String,
+    product_description: String,
+    product_images: [String],
+    price: Number,
+    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+
+    // 🔥 Embedded Review
+    reviews: [reviewSchema],
+    rating: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("Product", productSchema);

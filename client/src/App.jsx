@@ -11,6 +11,9 @@ import SignupForm from "./Pages/Signup";
 import LoginPage from "./Pages/Login";
 import ProductDetails from "./Pages/ProductDetails";
 import CartPage from "./Pages/Cart";
+import Wishlist from "./Pages/WishList";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 const AppContent = () => {
   const location = useLocation();
@@ -19,7 +22,10 @@ const AppContent = () => {
   return (
     <>
       {!hideHeaderFooter && <Header />}
-      
+
+      {/* ✅ ToastContainer globally */}
+      <ToastContainer position="top-right" autoClose={2500} theme="colored" />
+
       <Routes>
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/login" element={<LoginPage />} />
@@ -31,6 +37,7 @@ const AppContent = () => {
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/details/:id" element={<ProductDetails />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/wish" element={<Wishlist />} />
       </Routes>
 
       {!hideHeaderFooter && <Footer />}

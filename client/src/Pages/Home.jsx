@@ -1,47 +1,55 @@
-
-
-import React from "react";
-import banner1 from "../assets/image/top-img.jpg";
-import banner2 from "../assets/image/slide2.jpg";
-import banner3 from "../assets/image/slide3.jpg";
-import banner4 from "../assets/image/img-1.jpg";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Category from "./Category";
-import './Home.css'; 
 
 const Home = () => {
+  const [banners, setBanners] = useState([]);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/banner"); // ✅ update if different
+        setBanners(res.data.banners || []);
+      } catch (err) {
+        console.error("❌ Failed to fetch banners:", err);
+      }
+    };
+
+    fetchBanners();
+  }, []);
+
   return (
     <>
-      {/* 🌟 Hero Carousel */}
-<div id="heroCarousel" className="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="2000">
-        <div className="carousel-inner">
-          <div className="carousel-item active">
-            <img src={banner1} className="d-block w-100 banner-img" alt="Banner 1" />
+      {/* 🌟 Hero Slider (Dynamic) */}
+      <Carousel
+        autoPlay
+        infiniteLoop
+        showThumbs={false}
+        showStatus={false}
+        interval={3000}
+        transitionTime={800}
+        swipeable
+        emulateTouch
+      >
+        {banners.map((banner, idx) => (
+          <div key={idx}>
+            <img
+              src={banner.image}
+              alt={banner.title}
+              style={{ height: "570px", objectFit: "cover" }}
+            />
+            {banner.title && (
+              <p className="legend">{banner.title}</p> // ✅ Optional overlay
+            )}
           </div>
-          <div className="carousel-item">
-            <img src={banner2} className="d-block w-100 banner-img" alt="Banner 2" />
-          </div>
-          <div className="carousel-item">
-            <img src={banner3} className="d-block w-100 banner-img" alt="Banner 3" />
-          </div>
-          <div className="carousel-item">
-            <img src={banner4} className="d-block w-100 banner-img" alt="Banner 4" />
-          </div>
-        </div>
+        ))}
+      </Carousel>
 
-        {/* Controls */}
-        <button className="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-          <span className="carousel-control-prev-icon"></span>
-        </button>
-        <button className="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-          <span className="carousel-control-next-icon"></span>
-        </button>
-      </div>
-
-      {/* 🛒 Category Section */}
       <Category />
     </>
   );
 };
 
 export default Home;
-

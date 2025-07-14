@@ -65,19 +65,10 @@ exports.getCartItems = async (req, res) => {
 // ✅ Remove Cart Item by Cart ID
 exports.removeFromCart = async (req, res) => {
   const { cartItemId } = req.params;
-
   try {
     await Cart.findByIdAndDelete(cartItemId);
-
-    res.json({
-      success: true,
-      message: "Item removed from cart successfully",
-    });
+    res.json({ success: true, cartItemId });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to remove item",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: "Delete failed" });
   }
 };

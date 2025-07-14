@@ -5,6 +5,8 @@ import img2 from "../assets/image/img-2.jpg";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/auth-slice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
@@ -16,11 +18,18 @@ export default function LoginPage() {
   } = useForm();
 
   const [showPassword, setShowPassword] = useState(false);
-
-  const { isAuthenticated, isLoading } = useSelector((state) => state.auth);
+  const { isAuthenticated, isLoading, error } = useSelector((state) => state.auth);
 
   const onSubmit = (data) => {
-    dispatch(loginUser(data));
+    dispatch(loginUser(data))
+      .then((res) => {
+        if (res?.payload?.success) {
+          toast.success("Login successful ✅");
+        } else {
+          toast.error(res?.payload?.message || "Login failed");
+        }
+      })
+      .catch(() => toast.error("Something went wrong"));
   };
 
   useEffect(() => {
@@ -85,9 +94,8 @@ export default function LoginPage() {
             type="submit"
             className="btn btn-primary w-100 mb-3"
             style={{ backgroundColor: "#9b51e0", border: "none" }}
-            
           >
-           Log In
+            Log In
           </button>
 
           <div className="text-center mb-3">OR</div>
@@ -123,6 +131,9 @@ export default function LoginPage() {
           style={{ objectFit: "cover" }}
         />
       </div>
+
+      {/* 🔔 Toast Container */}
+      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
     </div>
   );
 }

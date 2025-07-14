@@ -118,3 +118,84 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ success: false, message: "❌ Failed to delete product" });
   }
 };
+
+
+
+// ✅ Add review to a product
+// controller/product.controller.js
+exports.addReview = async (req, res) => {
+  try {
+    const { userId, name, rating, comment } = req.body;
+    const productId = req.params.id;
+
+    // ✅ Validate input
+    if (!userId || !name || !rating || !comment) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+
+    // ✅ Parse rating safely
+    if (isNaN(parsedRating)) {
+      return res.status(400).json({ success: false, message: "Rating must be a number" });
+    }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    // ✅ Add new review
+    const newReview = {
+      userId,
+      name,
+     rating: Number(rating),
+      comment,
+      createdAt: new Date(),
+    };
+
+    // ✅ Ensure reviews is an array
+    if (!Array.isArray(product.reviews)) {
+      product.reviews = [];
+    }
+
+    product.reviews.push(newReview);
+
+    // ✅ Recalculate average rating
+    const total = product.reviews.reduce((sum, r) => sum + Number(r.rating), 0);
+    const average = product.reviews.length > 0 ? total / product.reviews.length : 0;
+
+    product.rating = Number(average.toFixed(1)); // round to 1 decimal
+
+    await product.save();
+
+    res.status(200).json({
+      success: true,
+      message: "✅ Review added successfully",  
+      reviews: product.reviews,
+    });
+  } catch (error) {
+    console.error("❌ Review Error:", error);
+    res.status(500).json({ success: false, message: "Failed to add review" });
+  }
+};
+
+
+
+// ✅ Get all reviews of a product
+exports.getReviews = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id).select("reviews");
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    res.status(200).json({ success: true, reviews: product.reviews });
+  } catch (error) {
+    console.error("Get reviews error:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch reviews" });
+  }
+};
+
+
+
+
+

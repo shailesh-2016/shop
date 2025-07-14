@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
 import img2 from "../assets/image/img-2.jpg";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { registerUser } from "../redux/auth-slice";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignupForm = () => {
   const dispatch = useDispatch();
@@ -16,19 +18,20 @@ const SignupForm = () => {
     formState: { errors },
   } = useForm();
 
-  const { isLoading, isAuthenticated } = useSelector((state) => state.auth);
-
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const { isLoading } = useSelector((state) => state.auth);
 
   const onSubmit = (data) => {
-    dispatch(registerUser(data));
+    dispatch(registerUser(data))
+      .unwrap()
+      .then((res) => {
+        toast.success("Signup successful! Please log in.");
+        navigate("/login");
+      })
+      .catch((err) => {
+        toast.error(err?.message || "Signup failed!");
+      });
   };
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isLoading, isAuthenticated, navigate]);
 
   return (
     <div className="container-fluid vh-100">
@@ -102,12 +105,15 @@ const SignupForm = () => {
               <small className="text-danger">{errors.repeatPassword.message}</small>
             )}
 
-            <button type="submit" className="btn btn-primary w-100" >
-              Sign up
+            <button type="submit" className="btn btn-primary w-100" disabled={isLoading}>
+              {isLoading ? "Signing up..." : "Sign up"}
             </button>
 
             <p className="text-center text-muted">
-              Can't Sign up? <a href="/login">Log in an account</a>
+              Can't Sign up?{" "}
+              <Link to="/login" className="text-decoration-none">
+                Log in an account
+              </Link>
             </p>
           </form>
         </div>
@@ -121,6 +127,9 @@ const SignupForm = () => {
           />
         </div>
       </div>
+
+      {/* Toast Message Container */}
+      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
     </div>
   );
 };

@@ -7,6 +7,10 @@ const authRoute = require("./routes/auth.route");
 const categoryRoute = require("./routes/category.route");
 const products = require("./routes/product.route");
 const cart = require("./routes/cart.route");
+const wishlist = require("./routes/wishlist.route");
+const bannerRoute = require("./routes/banner.route");
+
+
 const db = require("./config/db");
 db();
 const PORT = process.env.PORT || 3000;
@@ -41,6 +45,10 @@ app.use("/api/auth", authRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/products", products);
 app.use("/api/cart", cart);
+app.use("/api/wishlist", wishlist);
+app.use("/api/banner", bannerRoute);
+
+
 
 app.get("/", (req, res) => res.send("Hello World!"));
 app.listen(PORT, () => console.log(`Example app listening on PORT ${PORT}!`));
