@@ -27,6 +27,7 @@ const ProductDetail = () => {
   const [material, setMaterial] = useState("");
   const [size, setSize] = useState("");
   const [reviews, setReviews] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [showReviewModal, setShowReviewModal] = useState(false);
 
   const [reviewForm, setReviewForm] = useState({
@@ -38,12 +39,19 @@ const ProductDetail = () => {
   const user = useSelector((state) => state.auth.user);
   const userId = user?.id;
 
-  // Load product and reviews
+  // ✅ Fetch Product + Reviews
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const res = await axios.get(`http://localhost:8000/api/products/${id}`);
-        setProduct(res.data.product);
+        const productData = res.data.product;
+        setProduct(productData);
+
+        if (productData.category && productData.category._id) {
+          fetchRelatedProducts(productData.category._id);
+        } else {
+          console.warn("⚠️ No category ID found for product");
+        }
       } catch (err) {
         toast.error("Failed to load product");
       }
@@ -62,6 +70,23 @@ const ProductDetail = () => {
     fetchReviews();
   }, [id]);
 
+  // ✅ Fetch Related Products
+  const fetchRelatedProducts = async (categoryId) => {
+    if (!categoryId) return console.warn("⚠️ categoryId is missing");
+
+    try {
+      const res = await axios.get(
+        `http://localhost:8000/api/products/category/${categoryId}`
+      );
+      console.log(res)
+      const filtered = res.data.filter((p) => p._id !== id);
+      setRelatedProducts(filtered.slice(0, 4));
+    } catch (err) {
+      console.error("❌ Related products fetch error", err);
+    }
+  };
+
+  // Set username for review form
   useEffect(() => {
     if (user?.name) {
       setReviewForm((prev) => ({ ...prev, userName: user.name }));
@@ -92,110 +117,123 @@ const ProductDetail = () => {
       .catch(() => toast.error("Failed to add to cart"));
   };
 
-const handleReviewSubmit = async () => {
-  const reviewData = {
-    userId: user?._id,
-    name: user?.name,
-    rating: parseInt(rating),  // ✅ Make sure it's a Number
-    comment,
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    const reviewData = {
+      userId: user?._id,
+      name: user?.name,
+      rating: Number(reviewForm.rating),
+      comment: reviewForm.comment,
+    };
+
+    try {
+      await axios.post(
+        `http://localhost:8000/api/products/${id}/review`,
+        reviewData
+      );
+      toast.success("Review submitted!");
+      setShowReviewModal(false);
+      setReviewForm({ userName: user.name, rating: 5, comment: "" });
+    } catch (err) {
+      console.error("❌ Review error", err.response?.data || err.message);
+      toast.error("Failed to submit review");
+    }
   };
-
-  try {
-    const res = await axios.post(
-      `http://localhost:8000/api/products/${id}/review`,
-      reviewData
-    );
-    console.log(res.data);
-  } catch (err) {
-    console.error("❌ Review error", err.response?.data || err.message);
-  }
-};
-
 
   if (!product) return <p className="text-center mt-5">Loading...</p>;
 
+  console.log(relatedProducts)
   return (
     <Container className="my-5">
-      <Row>
-        <Col md={6}>
-          <img
-            src={product.product_images[0]}
-            alt="Main"
-            className="img-fluid border rounded mb-3"
-            style={{ maxHeight: "300px", objectFit: "cover" }}
-          />
-          <div className="d-flex gap-2 flex-wrap">
-            {product.product_images.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`thumb-${index}`}
-                className="img-thumbnail"
-                style={{ height: "60px", width: "60px", objectFit: "cover" }}
-              />
-            ))}
-          </div>
-        </Col>
+      <Row className="gx-3"> {/* Removed gap between image and details */}
+  {/* LEFT: Product Image */}
+  <Col md={6}>
+    <img
+      src={product.product_images[0]}
+      alt="Main"
+      className="img-fluid border rounded mb-3 w-100"
+      style={{ height: "500px", objectFit: "cover" }}
+    />
+    <div className="d-flex gap-2 flex-wrap">
+      {product.product_images.map((img, index) => (
+        <img
+          key={index}
+          src={img}
+          alt={`thumb-${index}`}
+          className="img-thumbnail"
+          style={{
+            height: "70px",
+            width: "70px",
+            objectFit: "cover",
+            cursor: "pointer",
+          }}
+        />
+      ))}
+    </div>
+  </Col>
 
-        <Col md={6}>
-          <h4>{product.product_name}</h4>
-          <p>⭐ {product.rating} ({product.reviews} Reviews)</p>
-          <h5 className="text-primary fw-bold">₹{product.price.toFixed(2)}</h5>
-          <p>{product.product_description}</p>
+  {/* RIGHT: Product Details */}
+  <Col md={6}>
+    <h4>{product.product_name}</h4>
+    <p>⭐ {product.rating} ({reviews.length} Reviews)</p>
+    <h5 className="text-primary fw-bold">₹{product.price.toFixed(2)}</h5>
+    <p>{product.product_description}</p>
 
-          {/* Material */}
-          <Form.Group className="mb-3">
-            <Form.Label>Material</Form.Label>
-            {["18K Gold", "22K Gold", "Rose Gold"].map((mat) => (
-              <Form.Check
-                inline
-                key={mat}
-                label={mat}
-                name="material"
-                type="radio"
-                onChange={() => setMaterial(mat)}
-                checked={material === mat}
-              />
-            ))}
-          </Form.Group>
+    {/* Material Selection */}
+    <Form.Group className="mb-3">
+      <Form.Label>Material</Form.Label>
+      {["18K Gold", "22K Gold", "Rose Gold"].map((mat) => (
+        <Form.Check
+          inline
+          key={mat}
+          label={mat}
+          name="material"
+          type="radio"
+          onChange={() => setMaterial(mat)}
+          checked={material === mat}
+        />
+      ))}
+    </Form.Group>
 
-          {/* Size */}
-          <Form.Group className="mb-3">
-            <Form.Label>Size</Form.Label>
-            <div className="d-flex gap-2 flex-wrap">
-              {["XS", "S", "M", "L", "XL"].map((sz) => (
-                <Button
-                  key={sz}
-                  variant={size === sz ? "dark" : "outline-secondary"}
-                  size="sm"
-                  onClick={() => setSize(sz)}
-                >
-                  {sz}
-                </Button>
-              ))}
-            </div>
-          </Form.Group>
+    {/* Size Buttons */}
+    <Form.Group className="mb-3">
+      <Form.Label>Size</Form.Label>
+      <div className="d-flex gap-2 flex-wrap">
+        {["XS", "S", "M", "L", "XL"].map((sz) => (
+          <Button
+            key={sz}
+            variant={size === sz ? "dark" : "outline-secondary"}
+            size="sm"
+            onClick={() => setSize(sz)}
+          >
+            {sz}
+          </Button>
+        ))}
+      </div>
+    </Form.Group>
 
-          {/* Quantity */}
-          <Form.Group className="mb-3">
-            <Form.Label>Quantity</Form.Label>
-            <div className="d-flex align-items-center gap-2">
-              <Button onClick={() => setQty(qty > 1 ? qty - 1 : 1)}>-</Button>
-              <span>{qty}</span>
-              <Button onClick={() => setQty(qty + 1)}>+</Button>
-            </div>
-          </Form.Group>
+    {/* Quantity Controls */}
+    <Form.Group className="mb-3">
+      <Form.Label>Quantity</Form.Label>
+      <div className="d-flex align-items-center gap-2">
+        <Button onClick={() => setQty(qty > 1 ? qty - 1 : 1)}>-</Button>
+        <span>{qty}</span>
+        <Button onClick={() => setQty(qty + 1)}>+</Button>
+      </div>
+    </Form.Group>
 
-          <div className="d-flex gap-3 mt-4">
-            <Button className="w-50" onClick={handleAddToCart}>
-              ADD TO CART
-            </Button>
-            <Button variant="outline-secondary" className="w-50">
-              Buy Now
-            </Button>
-          </div>
-        </Col>
-      </Row>
+    {/* Add to Cart / Buy Now */}
+    <div className="d-flex gap-3 mt-4">
+      <Button className="w-50" onClick={handleAddToCart}>
+        ADD TO CART
+      </Button>
+      <Button variant="outline-secondary" className="w-50">
+        Buy Now
+      </Button>
+    </div>
+  </Col>
+</Row>
+
 
       {/* Tabs */}
       <Tabs defaultActiveKey="description" className="mt-5">
@@ -232,10 +270,9 @@ const handleReviewSubmit = async () => {
                     <Card.Body>
                       <Card.Title>{rev.name}</Card.Title>
                       <Card.Subtitle className="mb-2 text-muted">
-                        ⭐ {rev.rating} -{" "}
-                        {new Date(rev.createdAt).toLocaleDateString()}
+                        ⭐ {rev.rating} - {new Date(rev.createdAt).toLocaleDateString()}
                       </Card.Subtitle>
-                      <Card.Text>{rev.comment}</Card.Text>
+                      {/* <Card.Text>{rev.comment}</Card.Text> */}
                     </Card.Body>
                   </Card>
                 ))
@@ -244,6 +281,45 @@ const handleReviewSubmit = async () => {
           </Row>
         </Tab>
       </Tabs>
+
+      {/* ✅ Related Products */}
+      {relatedProducts.length > 0 && (
+        <div className="mt-5">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h4>You May Also Like</h4>
+            <Button variant="link" className="text-decoration-none">
+              View All →
+            </Button>
+          </div>
+          <Row>
+            {relatedProducts.map((item, i) => (
+              <Col key={i} xs={6} md={3} className="mb-4">
+                <Card className="border-0 shadow-sm">
+                  <Card.Img
+                    variant="top"
+                    src={item.product_images[0]}
+                    style={{ height: "200px", objectFit: "cover" }}
+                  />
+                  <Card.Body>
+                    <Card.Title className="fs-6">{item.product_name}</Card.Title>
+                    <Card.Text className="text-primary fw-semibold">
+                      ₹{item.price.toFixed(2)}
+                    </Card.Text>
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="w-100"
+                      onClick={() => navigate(`/details/${item._id}`)}
+                    >
+                      View
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </div>
+      )}
 
       {/* Review Modal */}
       <ReviewModal

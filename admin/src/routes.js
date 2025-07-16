@@ -6,6 +6,7 @@ import UpdateCat from './components/List/Category/UpdateCat'
 import Edit from './components/List/Product/Edit'
 import AddBanner from './components/List/Banner/banner'
 import ViewBanners from './components/List/Banner/viewBanner'
+import OrderStatusAdmin from './components/List/Order/OrderStatus'
 // import Create from './components/Crud/Create'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
@@ -75,6 +76,7 @@ const routes = [
   { path: '/BANNER/View Banner', name: 'View Banner', element: ViewBanners },
   { path: '/PRODUCT/Add Product', name: 'Add Product', element: Create },
   { path: 'PRODUCT/View Product', name: 'View Product', element: View },
+  { path: 'ORDER/order-page', name: 'Order Status', element: OrderStatusAdmin },
   { path: '/update/:id', name: 'Update', element: UpdateCat },
   { path: '/edit/:id', name: 'Edit', element: Edit },
 

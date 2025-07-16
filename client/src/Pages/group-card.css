@@ -1,37 +1,133 @@
+.bg-light-gray {
+  background-color: #F1F5F9;
+}
+
 .product-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-radius: 12px;
+  border: none;
+  transition: all 0.3s ease-in-out;
+  border-radius: 0.75rem;
+  overflow: hidden;
 }
 
 .product-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
 }
 
 .product-img {
   height: 220px;
-  width: 100%;
   object-fit: cover;
-  transition: filter 0.3s ease;
-  border-radius: 12px 12px 0 0;
+  border-radius: 0.75rem 0.75rem 0 0;
 }
 
-.product-card:hover .product-img {
-  filter: blur(2px) brightness(0.85);
+.btn-cart {
+  background-color: #7C3AED; /* Purple */
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
 }
 
-.add-to-cart-btn {
+.btn-cart:hover {
+  background-color: #6D28D9;
+}
+
+
+.product-card {
+  border: none;
+  transition: all 0.3s ease-in-out;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.product-img {
+  height: 220px;
+  object-fit: cover;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+/* ✅ Hide initially */
+.add-to-cart-wrapper {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%;
-  padding: 0.5rem 1rem;
-  display: none;
-  background: rgba(255, 255, 255, 0.85);
-  
+  right: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease-in-out;
 }
 
-.product-card:hover .add-to-cart-btn {
-  display: block;
-  
+/* Product card styling */
+.product-card {
+  border: none;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.product-img {
+  height: 220px;
+  object-fit: cover;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+/* 👇 ADD TO CART hidden by default */
+.add-to-cart-wrapper {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* 👇 Show button on hover */
+.product-card:hover .add-to-cart-wrapper {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Button Styling */
+.btn-cart {
+  background-color: #7C3AED;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-cart:hover {
+  background-color: #6D28D9;
+}
+
+.card-body {
+  position: relative;
+  padding-bottom: 3.5rem; /* 👈 space for hidden button */
+}
+
+/* Button wrapper (initially hidden) */
+.add-to-cart-wrapper {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+/* Show on hover */
+.product-card:hover .add-to-cart-wrapper {
+  opacity: 1;
+  transform: translateY(0);
 }

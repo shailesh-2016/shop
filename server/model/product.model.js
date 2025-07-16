@@ -1,5 +1,8 @@
+// ✅ FIXED AND FINAL: product.model.js and addReview controller logic
+
 const mongoose = require("mongoose");
 
+// ✅ Review Schema - Properly define rating as Number
 const reviewSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -26,6 +29,7 @@ const reviewSchema = new mongoose.Schema({
   },
 });
 
+// ✅ Product Schema
 const productSchema = new mongoose.Schema(
   {
     product_name: String,
@@ -33,8 +37,6 @@ const productSchema = new mongoose.Schema(
     product_images: [String],
     price: Number,
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
-
-    // 🔥 Embedded Review
     reviews: [reviewSchema],
     rating: { type: Number, default: 0 },
   },

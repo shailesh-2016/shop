@@ -16,6 +16,8 @@ const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
 
+  console.log(isAuthenticated)
+
   const cartCount = cartItems?.length || 0;
   const wishlistCount = wishlistItems?.length || 0;
 

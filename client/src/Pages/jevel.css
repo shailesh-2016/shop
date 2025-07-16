@@ -1,12 +1,39 @@
-.insta-image {
+/* ✅ Light Gray Background for Full Section */
+.bg-light-gray {
+  background-color: #F1F5F9;
+}
+
+/* ✅ Feature Card Styling */
+.feature-card {
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  transform: translateY(-5px);
+}
+
+/* ✅ Icon Circle Design */
+.icon-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #f3e8ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ✅ Instagram Image Styling */
+.insta-img {
   width: 180px;
   height: 170px;
   object-fit: cover;
   border-radius: 8px;
-  transition: filter 0.3s ease, transform 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
-.insta-image:hover {
-  filter: brightness(0.85) blur(1.5px);
-  transform: scale(1.02);
+.insta-img:hover {
+  transform: scale(1.05);
 }

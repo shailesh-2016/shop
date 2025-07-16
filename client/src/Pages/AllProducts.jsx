@@ -1,4 +1,3 @@
-// src/Pages/ProductPage.jsx
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Heart } from "lucide-react";
 import axios from "axios";
@@ -11,6 +10,14 @@ import {
   getWishlist,
 } from "../redux/wish-list/listSlice";
 import { toast } from "react-toastify";
+
+// ✅ Shuffle function to randomize product order
+const shuffleArray = (array) => {
+  return array
+    .map((item) => ({ item, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ item }) => item);
+};
 
 const ProductPage = () => {
   const [filters, setFilters] = useState({
@@ -26,13 +33,14 @@ const ProductPage = () => {
   const dispatch = useDispatch();
   const wishlistItems = useSelector((state) => state.wishlist.items);
 
-  // ✅ Load products & wishlist
+  // ✅ Fetch products & wishlist
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await axios.get("http://localhost:8000/api/products");
-        setProducts(res.data.products || []);
-        setFilteredProducts(res.data.products || []);
+        const shuffled = shuffleArray(res.data.products || []);
+        setProducts(shuffled);
+        setFilteredProducts(shuffled);
       } catch (err) {
         console.error("❌ Failed to fetch products:", err);
       }
@@ -88,20 +96,19 @@ const ProductPage = () => {
     return wishlistItems.some((item) => item._id === id);
   };
 
- const toggleWishlist = async (product) => {
-  try {
-    if (isInWishlist(product._id)) {
-      toast.info("Removed from wishlist");
-      await dispatch(removeFromWishlist(product._id)).unwrap();
-    } else {
-      toast.success("Added to wishlist");
-      await dispatch(addToWishlist(product)).unwrap();
+  const toggleWishlist = async (product) => {
+    try {
+      if (isInWishlist(product._id)) {
+        toast.info("Removed from wishlist");
+        await dispatch(removeFromWishlist(product._id)).unwrap();
+      } else {
+        toast.success("Added to wishlist");
+        await dispatch(addToWishlist(product)).unwrap();
+      }
+    } catch (err) {
+      toast.error("Something went wrong!");
     }
-  } catch (err) {
-    toast.error("Something went wrong!");
-  }
-};
-
+  };
 
   return (
     <div className="container-fluid py-4">
@@ -179,44 +186,46 @@ const ProductPage = () => {
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
             {filteredProducts.map((product, index) => (
               <div className="col d-flex" key={index}>
-                <div className="card border w-100 card-hover-group">
-                  <div className="position-relative">
-                    <img
-                      src={product.product_images?.[0]}
-                      className="card-img-top"
-                      alt={product.product_name}
-                    />
+               <div className="card border w-100 card-hover-group">
+  <div className="position-relative">
+    <img
+      src={product.product_images?.[0]}
+      className="card-img-top"
+      alt={product.product_name}
+    />
 
-                    {/* ❤️ Wishlist Button */}
-                    <button
-                      className={`wishlist-btn ${
-                        isInWishlist(product._id) ? "active" : ""
-                      }`}
-                      onClick={() => toggleWishlist(product)}
-                      aria-label="Add to wishlist"
-                    >
-                      <Heart
-                        size={18}
-                        color={isInWishlist(product._id) ? "#e63946" : "#333"}
-                        fill={isInWishlist(product._id) ? "#e63946" : "none"}
-                      />
-                    </button>
+    {/* ❤️ Wishlist Button */}
+    <button
+      className={`wishlist-btn ${
+        isInWishlist(product._id) ? "active" : ""
+      }`}
+      onClick={() => toggleWishlist(product)}
+      aria-label="Add to wishlist"
+    >
+      <Heart
+        size={18}
+        color={isInWishlist(product._id) ? "#e63946" : "#333"}
+        fill={isInWishlist(product._id) ? "#e63946" : "none"}
+      />
+    </button>
+  </div>
 
-                    <Link
-                      to={`/details/${product._id}`}
-                      className="btn btn-primary w-100 hover-cart-btn d-flex align-items-center justify-content-center gap-2"
-                    >
-                      <ShoppingCart size={16} /> View Details
-                    </Link>
-                  </div>
+  <div className="card-body text-center">
+    <h6 className="card-title">{product.product_name}</h6>
+    <p className="card-text text-primary fw-semibold">
+      ₹{Number(product.price).toFixed(2)}
+    </p>
 
-                  <div className="card-body text-center">
-                    <h6 className="card-title">{product.product_name}</h6>
-                    <p className="card-text text-primary fw-semibold">
-                      ₹{Number(product.price).toFixed(2)}
-                    </p>
-                  </div>
-                </div>
+    {/* ✅ Button moved to below price but same styling */}
+    <Link
+      to={`/details/${product._id}`}
+      className="btn btn-primary w-100 hover-cart-btn d-flex align-items-center justify-content-center gap-2 mt-2"
+    >
+      <ShoppingCart size={16} /> View Details
+    </Link>
+  </div>
+</div>
+
               </div>
             ))}
             {filteredProducts.length === 0 && (

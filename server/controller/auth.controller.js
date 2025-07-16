@@ -99,6 +99,8 @@ exports.logoutUser = (req, res) => {
   });
 };
 
+
+
 // ✅ AUTH MIDDLEWARE
 exports.authMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
@@ -117,5 +119,50 @@ exports.authMiddleware = async (req, res, next) => {
       success: false,
       message: "Unauthorised user!",
     });
+  }
+};
+
+
+
+exports.googleLogin = async (req, res) => {
+  try {
+    const { name, email, avatar } = req.body;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = new User({ name, email, avatar, password: "" });
+      await user.save();
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        role: user.role,
+      },
+      process.env.SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
+
+    const userData = user.toObject();
+    delete userData.password;
+
+    res.status(200).json({
+      success: true,
+      message: "Google login successful",
+      user: userData,
+    });
+  } catch (error) {
+    console.error("Google Login Error:", error);
+    res.status(500).json({ success: false, message: "Google login failed" });
   }
 };

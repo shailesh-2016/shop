@@ -91,5 +91,3 @@ exports.updateCategory = async (req, res) => {
 };
 
 
-
-

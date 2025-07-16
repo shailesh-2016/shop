@@ -99,6 +99,25 @@ const _nav = [
       },
     ],
   },
+  {
+    component: CNavTitle,
+    name: 'Order Management',
+  },
+  {
+    component: CNavGroup,
+    name: 'ORDER',
+    to: '/order',
+    icon: <CIcon icon={cilImage} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'order',
+        to: '/ORDER/order-page',
+        icon: <CIcon icon={cilPlus} customClassName="nav-icon" />,
+      },
+     
+    ],
+  },
 ]
 
 export default _nav

@@ -22,7 +22,15 @@ const SignupForm = () => {
   const { isLoading } = useSelector((state) => state.auth);
 
   const onSubmit = (data) => {
-    dispatch(registerUser(data))
+    if (data.password !== data.repeatPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    // ✅ remove repeatPassword before sending
+    const { repeatPassword, ...formData } = data;
+
+    dispatch(registerUser(formData))
       .unwrap()
       .then((res) => {
         toast.success("Signup successful! Please log in.");
@@ -44,6 +52,7 @@ const SignupForm = () => {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column gap-3">
+            {/* Name */}
             <input
               type="text"
               className="form-control"
@@ -52,6 +61,7 @@ const SignupForm = () => {
             />
             {errors.name && <small className="text-danger">{errors.name.message}</small>}
 
+            {/* Username */}
             <input
               type="text"
               className="form-control"
@@ -60,6 +70,7 @@ const SignupForm = () => {
             />
             {errors.username && <small className="text-danger">{errors.username.message}</small>}
 
+            {/* Email */}
             <input
               type="email"
               className="form-control"
@@ -74,14 +85,19 @@ const SignupForm = () => {
             />
             {errors.email && <small className="text-danger">{errors.email.message}</small>}
 
+            {/* Password */}
             <input
               type={showPassword ? "text" : "password"}
               className="form-control"
               placeholder="Password"
-              {...register("password", { required: "Password is required" })}
+              {...register("password", {
+                required: "Password is required",
+                minLength: { value: 6, message: "Minimum 6 characters" },
+              })}
             />
             {errors.password && <small className="text-danger">{errors.password.message}</small>}
 
+            {/* Confirm Password */}
             <div className="position-relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -110,9 +126,9 @@ const SignupForm = () => {
             </button>
 
             <p className="text-center text-muted">
-              Can't Sign up?{" "}
+              Already have an account?{" "}
               <Link to="/login" className="text-decoration-none">
-                Log in an account
+                Log in here
               </Link>
             </p>
           </form>

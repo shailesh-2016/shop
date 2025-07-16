@@ -72,3 +72,21 @@
   z-index: 10;
 }
 
+/* 👤 User dropdown styling fix */
+.dropdown-menu {
+  min-width: 150px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 9999 !important;
+}
+
+/* Dropdown item hover background fix */
+.dropdown-menu .dropdown-item {
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #f1f1f1;
+  color: #000;
+}

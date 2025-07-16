@@ -12,6 +12,7 @@ router.delete('/:id', productController.deleteProduct);
 // routes/productRoutes.js (ya jisme bhi tum ho)
 router.post('/:id/review', productController.addReview);
 router.get('/:id/review', productController.getReviews);     // ✅ Get reviews
+router.get("/category/:id", productController.getProductsByCategoryId);
 
 
 
