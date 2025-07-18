@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../Layout/header.css";
+// Header.css ko import karna na bhulein!
+import "../Layout/header.css"; 
 import { Heart, Menu, Search, ShoppingCart, User } from "lucide-react";
 import logo from "../assets/image/logo.png";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -16,19 +17,18 @@ const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
 
-  console.log(isAuthenticated)
-
   const cartCount = cartItems?.length || 0;
   const wishlistCount = wishlistItems?.length || 0;
 
   const handleLogout = () => {
     dispatch(logoutUser());
     navigate("/login");
+    setShowDropdown(false); // Dropdown close karein logout ke baad
   };
 
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
-  // ✅ Close dropdown on outside click
+  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -41,124 +41,118 @@ const Header = () => {
 
   return (
     <>
-      {/* 🔼 Top Navbar */}
-      <div className="navbar-upper">
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <div className="container-fluid">
-            <a className="navbar-brand" href="#">
-              Free shipping on all orders above ₹499
+      {/* --- Announcement Bar (Top Navbar) --- */}
+      <div className="announcement-bar py-2 text-center bg-dark text-white d-none d-md-block"> {/* d-none d-md-block for mobile hide */}
+        <div className="container-fluid d-flex justify-content-between align-items-center">
+          <p className="mb-0 mx-auto">
+            <small>Free shipping on all orders above ₹499</small>
+          </p>
+          <div className="d-flex gap-3">
+            <a href="tel:+918300083000" className="text-white text-decoration-none d-flex align-items-center">
+              <i className="bi bi-telephone-fill me-1"></i> <small>+91 83000 83000</small>
             </a>
-            <button
-              className="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarSupportedContent"
-            >
-              <Menu size={24} color="black" />
-            </button>
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li className="nav-item">
-                  <a className="nav-link active" href="#">
-                    +91 83000 83000
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link active" href="#">
-                    kukujewel@gmail.com
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <a href="mailto:kukujewel@gmail.com" className="text-white text-decoration-none d-flex align-items-center">
+              <i className="bi bi-envelope-fill me-1"></i> <small>kukujewel@gmail.com</small>
+            </a>
           </div>
-        </nav>
+        </div>
       </div>
 
-      {/* 🔽 Main Navbar */}
-      <div className="navbar-lower shadow-sm bg-white">
-        <nav className="navbar navbar-expand-lg container">
+      {/* --- Main Navbar (Logo, Nav Links, Icons) --- */}
+      <header className="main-header shadow-sm bg-white">
+        <nav className="navbar navbar-expand-lg navbar-light container">
           <NavLink to="/" className="navbar-brand">
-            <img src={logo} alt="Logo" height={60} width={160} />
+            <img src={logo} alt="Kuku Jewel Logo" className="header-logo" />
           </NavLink>
 
+          {/* Toggler for mobile */}
           <button
             className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
           >
-            <Menu size={24} color="black" />
+            <Menu size={24} color="#333" /> {/* Darker icon color */}
           </button>
 
-          <div className="collapse navbar-collapse justify-content-between" id="mainNavbar">
+          <div className="collapse navbar-collapse" id="mainNavbar">
             {/* Navigation Links */}
-            <ul className="navbar-nav gap-4 mx-auto mb-2 mb-lg-0">
+            <ul className="navbar-nav ms-auto mb-2 mb-lg-0 main-nav-links">
               <li className="nav-item">
-                <NavLink className="nav-link text-dark" to="/home">Home</NavLink>
+                <NavLink className="nav-link" to="/">Home</NavLink> {/* Changed to "/" for home */}
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link text-dark" to="/products">All Product</NavLink>
+                <NavLink className="nav-link" to="/products">All Products</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link text-dark" to="/category">Category</NavLink>
+                <NavLink className="nav-link" to="/category">Categories</NavLink> {/* Changed to Categories */}
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link text-dark" to="/about">About Us</NavLink>
+                <NavLink className="nav-link" to="/about">About Us</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link text-dark" to="/contact">Contact</NavLink>
+                <NavLink className="nav-link" to="/contact">Contact Us</NavLink> {/* Changed to Contact Us */}
               </li>
             </ul>
 
             {/* Right Icons */}
-            <div className="d-flex align-items-center gap-3">
-              {/* 🔍 Search */}
-              <div className="icon-wrapper" aria-label="Search">
-                <Search size={20} color="#333" />
+            <div className="d-flex align-items-center gap-3 header-icons-group">
+              {/* Search Icon */}
+              <div className="icon-wrapper clickable-icon" aria-label="Search">
+                <Search size={20} color="#555" /> {/* Softer icon color */}
               </div>
 
-              {/* 🛒 Cart */}
+              {/* Cart Icon */}
               <div className="position-relative">
-                <NavLink to="/cart" className="icon-wrapper" aria-label="Cart">
-                  <ShoppingCart size={20} color="#333" />
+                <NavLink to="/cart" className="icon-wrapper clickable-icon" aria-label="Shopping Cart">
+                  <ShoppingCart size={20} color="#555" />
                 </NavLink>
                 {cartCount > 0 && (
-                  <span className="icon-badge">{cartCount}</span>
+                  <span className="icon-badge badge bg-danger rounded-pill">{cartCount}</span>
                 )}
               </div>
 
-              {/* ❤️ Wishlist */}
+              {/* Wishlist Icon */}
               <div className="position-relative">
-                <NavLink to="/wish" className="icon-wrapper" aria-label="Wishlist">
-                  <Heart size={20} color="#333" />
+                <NavLink to="/wish" className="icon-wrapper clickable-icon" aria-label="Wishlist">
+                  <Heart size={20} color="#555" />
                 </NavLink>
                 {wishlistCount > 0 && (
-                  <span className="icon-badge">{wishlistCount}</span>
+                  <span className="icon-badge badge bg-danger rounded-pill">{wishlistCount}</span>
                 )}
               </div>
 
-              {/* 👤 User */}
+              {/* User Icon & Dropdown */}
               <div className="dropdown position-relative" ref={dropdownRef}>
                 <div
-                  className="icon-wrapper"
+                  className="icon-wrapper clickable-icon"
                   onClick={toggleDropdown}
-                  aria-label="User"
+                  aria-label="User Account"
+                  role="button" // Indicates it's interactive
+                  aria-haspopup="true"
+                  aria-expanded={showDropdown}
                 >
-                  <User size={20} color="#333" />
+                  <User size={20} color="#555" />
                 </div>
 
                 {showDropdown && (
                   <ul
-                    className="dropdown-menu dropdown-menu-end show mt-2"
-                    style={{ position: "absolute", right: 0, zIndex: 999 }}
+                    className="dropdown-menu dropdown-menu-end show fade-in-up" // Added fade-in-up class
+                    style={{ position: "absolute", right: 0, zIndex: 1000 }} // Increased zIndex
                   >
                     {!isAuthenticated ? (
                       <>
-                        <li><NavLink className="dropdown-item" to="/login">Login</NavLink></li>
-                        <li><NavLink className="dropdown-item" to="/signup">Signup</NavLink></li>
+                        <li><NavLink className="dropdown-item" to="/login" onClick={() => setShowDropdown(false)}>Login</NavLink></li>
+                        <li><NavLink className="dropdown-item" to="/signup" onClick={() => setShowDropdown(false)}>Signup</NavLink></li>
                       </>
                     ) : (
-                      <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
+                      <>
+                        <li><NavLink className="dropdown-item" to="/profile" onClick={() => setShowDropdown(false)}>My Profile</NavLink></li> {/* Added Profile Link */}
+                        <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
+                      </>
                     )}
                   </ul>
                 )}
@@ -166,7 +160,7 @@ const Header = () => {
             </div>
           </div>
         </nav>
-      </div>
+      </header>
     </>
   );
 };

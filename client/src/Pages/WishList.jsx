@@ -61,39 +61,47 @@ const Wishlist = () => {
             </tr>
           </thead>
 
-          <tbody>
-            {wishlistItems.map((item) => (
-              <tr key={item._id}>
-                <td>
-                  <Image
-                    src={item.product_images?.[0]}
-                    rounded
-                    height="80"
-                    width="80"
-                    style={{ objectFit: "cover" }}
-                  />
-                </td>
-                <td>{item.product_name}</td>
-                <td>
-                  <Button
-                    style={{ backgroundColor: "#9b51e0", border: "none" }}
-                    className="px-4 py-1"
-                    onClick={() => handleAddToCart(item)}
-                  >
-                    Add To Cart
-                  </Button>
-                </td>
-                <td>₹{Number(item.price).toFixed(2)}</td>
-                <td>
-                  <Trash2
-                    role="button"
-                    color="black"
-                    onClick={() => handleRemove(item._id)}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
+         <tbody>
+  {wishlistItems.map((item) => (
+    <tr key={item._id}>
+      <td>
+        <Link to={`/details/${item._id}`}>
+          <Image
+            src={item.product_images?.[0]}
+            rounded
+            height="80"
+            width="80"
+            style={{ objectFit: "cover" }}
+          />
+        </Link>
+      </td>
+      <td>
+        <Link to={`/details/${item._id}`} className="text-decoration-none text-dark">
+          {item.product_name}
+        </Link>
+      </td>
+      <td>
+        <Link to={`/details/${item._id}`}>
+          <Button
+            style={{ backgroundColor: "#9b51e0", border: "none" }}
+            className="px-4 py-1"
+          >
+            Add To Cart
+          </Button>
+        </Link>
+      </td>
+      <td>₹{Number(item.price).toFixed(2)}</td>
+      <td>
+        <Trash2
+          role="button"
+          color="black"
+          onClick={() => handleRemove(item._id)}
+        />
+      </td>
+    </tr>
+  ))}
+</tbody>
+
         </Table>
       )}
 

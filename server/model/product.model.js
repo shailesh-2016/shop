@@ -36,7 +36,20 @@ const productSchema = new mongoose.Schema(
     product_description: String,
     product_images: [String],
     price: Number,
+    discount_price: Number,
+    material: String,
+    quantity: Number,
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+
+    // ✅ New sizeStock structure
+    sizeStock: [
+      {
+        size: String,           // e.g., S, M, L, XL
+        stock: Number,          // e.g., 10
+        material: String,       // Optional: cotton, silk, etc.
+      },
+    ],
+
     reviews: [reviewSchema],
     rating: { type: Number, default: 0 },
   },

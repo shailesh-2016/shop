@@ -1,0 +1,312 @@
+/* --- Global Variables (if not already in a common CSS file) --- */
+:root {
+  --primary-color: #9D4BE0; /* Your brand color */
+  --primary-color-dark: #7C3BCE;
+  --primary-color-light: #D8C2F5;
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+  --input-border: #ced4da;
+  --input-focus-shadow: rgba(157, 75, 224, 0.25); /* Primary color with transparency */
+  --light-gray: #f2f2f2;
+}
+
+/* --- Utility Classes (if not already in a common CSS file) --- */
+.btn-primary-custom {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+  padding: 12px 20px; /* Consistent button padding */
+  font-size: 1.1rem; /* Slightly larger text */
+  font-weight: 500;
+  border-radius: 8px; /* Rounded corners */
+}
+
+.btn-primary-custom:hover {
+  background-color: var(--primary-color-dark) !important;
+  border-color: var(--primary-color-dark) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary-custom:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-outline-secondary-custom {
+  border: 1px solid var(--input-border);
+  color: var(--text-dark);
+  background-color: #fff;
+  transition: all 0.3s ease;
+  padding: 10px 15px; /* Consistent button padding */
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+.btn-outline-secondary-custom:hover {
+  background-color: var(--light-gray);
+  border-color: #c0c0c0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.btn-outline-secondary-custom:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.brand-highlight {
+  color: var(--primary-color);
+}
+
+.forgot-password-link, .signup-link {
+  color: var(--primary-color) !important;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.forgot-password-link:hover, .signup-link:hover {
+  color: var(--primary-color-dark) !important;
+  text-decoration: underline !important;
+}
+
+/* --- Login Container --- */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  background-color: #f8f9fa; /* Light background for the whole page */
+  overflow: hidden; /* Prevent scrollbar from image overflow */
+}
+
+.login-form-section {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px; /* Default padding */
+}
+
+.login-image-section img {
+  filter: brightness(0.8); /* Slightly dim the image for better contrast with brand */
+}
+
+.login-content-wrapper {
+  max-width: 450px; /* Max width for the form content */
+  width: 100%;
+  padding: 20px;
+}
+
+.brand-logo {
+  font-size: 2.5rem; /* Larger brand logo */
+  letter-spacing: 2px;
+}
+
+.tagline {
+  font-size: 0.95rem;
+  margin-top: 5px;
+  color: #888 !important;
+}
+
+.form-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 30px;
+}
+
+.login-form {
+  margin-bottom: 20px;
+}
+
+/* --- Form Control Styling --- */
+.form-group {
+  margin-bottom: 20px; /* Spacing between form groups */
+}
+
+.form-control {
+  height: 50px; /* Taller input fields */
+  border-radius: 8px; /* Slightly more rounded corners */
+  border: 1px solid var(--input-border);
+  padding: 10px 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem var(--input-focus-shadow);
+}
+
+.form-control::placeholder {
+  color: #a0a0a0;
+  font-size: 0.95rem;
+}
+
+.form-control.is-invalid {
+  border-color: var(--danger-color);
+}
+
+.invalid-feedback {
+  font-size: 0.875em;
+  color: var(--danger-color);
+  margin-top: 5px;
+}
+
+/* --- Password Toggle --- */
+.password-field {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6c757d;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: var(--primary-color-dark);
+}
+
+/* --- OR Separator --- */
+.or-separator {
+  position: relative;
+  text-align: center;
+  margin: 25px 0;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.or-separator::before,
+.or-separator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%; /* Adjust width as needed */
+  height: 1px;
+  background-color: #e0e0e0;
+}
+
+.or-separator::before {
+  left: 0;
+}
+
+.or-separator::after {
+  right: 0;
+}
+
+.or-separator span {
+  background-color: #fff; /* Background of the login form */
+  padding: 0 10px;
+  position: relative;
+  z-index: 1; /* Ensure text is above lines */
+}
+
+/* --- Social Login Buttons --- */
+.social-login-buttons .btn {
+  display: flex; /* Ensures icon and text are aligned */
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Space between icon and text */
+}
+
+.social-login-buttons img {
+  width: 20px;
+  height: 20px;
+}
+
+.social-login-buttons .facebook-btn {
+  /* Specific styling for Facebook if needed, otherwise uses .btn-outline-secondary-custom */
+  color: #3b5998; /* Facebook blue */
+  border-color: #3b5998;
+}
+.social-login-buttons .facebook-btn:hover {
+  background-color: #3b5998;
+  color: #fff;
+}
+.social-login-buttons .facebook-btn:disabled {
+  color: #a0a0a0;
+  border-color: #e0e0e0;
+  background-color: #fff;
+  opacity: 0.6;
+}
+
+.no-account-text {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 991.98px) { /* Tablet and smaller */
+  .login-form-section {
+    padding: 30px;
+  }
+  .brand-logo {
+    font-size: 2rem;
+  }
+  .form-title {
+    font-size: 1.6rem;
+  }
+  .login-content-wrapper {
+    max-width: 400px;
+  }
+  .btn-primary-custom {
+    font-size: 1rem;
+    padding: 10px 18px;
+  }
+  .btn-outline-secondary-custom {
+    font-size: 0.95rem;
+    padding: 8px 12px;
+  }
+  .social-login-buttons {
+      flex-direction: column; /* Stack buttons on smaller screens */
+  }
+  .or-separator {
+      margin: 15px 0;
+  }
+}
+
+@media (max-width: 767.98px) { /* Mobile */
+  .login-form-section {
+    width: 100%; /* Take full width on mobile */
+    padding: 20px;
+  }
+  .login-image-section {
+    display: none !important; /* Hide image on mobile */
+  }
+  .login-container {
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    background-color: #fff; /* White background on mobile */
+  }
+  .login-content-wrapper {
+    max-width: 350px; /* Even narrower for small screens */
+    padding: 15px;
+  }
+  .brand-logo {
+    font-size: 2.2rem;
+  }
+  .form-title {
+    font-size: 1.5rem;
+  }
+  .form-control {
+    height: 45px;
+    font-size: 0.9rem;
+  }
+  .form-control::placeholder {
+    font-size: 0.85rem;
+  }
+  .social-login-buttons .btn {
+    font-size: 0.9rem;
+  }
+  .invalid-feedback, .no-account-text {
+    font-size: 0.8em;
+  }
+}

@@ -1,0 +1,206 @@
+/* --- Global Variables (if not already in a common CSS file) --- */
+:root {
+  --primary-color: #9D4BE0; /* Your brand color */
+  --primary-color-dark: #7C3BCE;
+  --primary-color-light: #D8C2F5;
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --input-border: #ced4da;
+  --input-focus-shadow: rgba(157, 75, 224, 0.25); /* Primary color with transparency */
+}
+
+/* --- Utility Classes (if not already in a common CSS file) --- */
+.btn-primary-custom {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+  background-color: var(--primary-color-dark) !important;
+  border-color: var(--primary-color-dark) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary-custom:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.brand-highlight {
+  color: var(--primary-color);
+}
+
+.login-link {
+  color: var(--primary-color) !important;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.login-link:hover {
+  color: var(--primary-color-dark) !important;
+  text-decoration: underline !important;
+}
+
+/* --- Signup Container --- */
+.signup-container {
+  min-height: 100vh;
+  display: flex;
+  background-color: #f8f9fa; /* Light background for the whole page */
+  overflow: hidden; /* Prevent scrollbar from image overflow */
+}
+
+.signup-form-section {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px; /* Default padding */
+}
+
+.signup-image-section img {
+  filter: brightness(0.8); /* Slightly dim the image for better contrast with brand */
+}
+
+.signup-content-wrapper {
+  max-width: 450px; /* Max width for the form content */
+  width: 100%;
+  padding: 20px;
+}
+
+.brand-logo {
+  font-size: 2.5rem; /* Larger brand logo */
+  letter-spacing: 2px;
+}
+
+.tagline {
+  font-size: 0.95rem;
+  margin-top: 5px;
+  color: #888 !important;
+}
+
+.form-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 30px;
+}
+
+.signup-form {
+  margin-bottom: 20px;
+}
+
+/* --- Form Control Styling --- */
+.form-group {
+  margin-bottom: 15px; /* Spacing between form groups */
+}
+
+.form-control {
+  height: 50px; /* Taller input fields */
+  border-radius: 8px; /* Slightly more rounded corners */
+  border: 1px solid var(--input-border);
+  padding: 10px 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem var(--input-focus-shadow);
+}
+
+.form-control::placeholder {
+  color: #a0a0a0;
+  font-size: 0.95rem;
+}
+
+.form-control.is-invalid {
+  border-color: var(--danger-color);
+}
+
+.invalid-feedback {
+  font-size: 0.875em;
+  color: var(--danger-color);
+  margin-top: 5px;
+}
+
+/* --- Password Toggle --- */
+.password-field {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6c757d;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: var(--primary-color-dark);
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 991.98px) { /* Tablet and smaller */
+  .signup-form-section {
+    padding: 30px;
+  }
+  .brand-logo {
+    font-size: 2rem;
+  }
+  .form-title {
+    font-size: 1.6rem;
+  }
+  .signup-content-wrapper {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 767.98px) { /* Mobile */
+  .signup-form-section {
+    width: 100%; /* Take full width on mobile */
+    padding: 20px;
+  }
+  .signup-image-section {
+    display: none !important; /* Hide image on mobile */
+  }
+  .signup-container {
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    background-color: #fff; /* White background on mobile */
+  }
+  .signup-content-wrapper {
+    max-width: 350px; /* Even narrower for small screens */
+    padding: 15px;
+  }
+  .brand-logo {
+    font-size: 2.2rem;
+  }
+  .form-title {
+    font-size: 1.5rem;
+  }
+  .form-control {
+    height: 45px;
+    font-size: 0.9rem;
+  }
+  .form-control::placeholder {
+    font-size: 0.85rem;
+  }
+  .btn-primary-custom {
+    padding: 12px 15px;
+    font-size: 0.95rem;
+  }
+  .invalid-feedback {
+    font-size: 0.8em;
+  }
+}

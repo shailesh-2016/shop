@@ -1,6 +1,8 @@
 const Product = require("../model/product.model");
 
 // ✅ CREATE PRODUCT with multiple image upload (from Cloudinary)
+// controllers/product.controller.js
+
 exports.createProduct = async (req, res) => {
   try {
     const {
@@ -9,18 +11,14 @@ exports.createProduct = async (req, res) => {
       price,
       discount_price,
       material,
-      size,
-      quantity,
       category,
+      sizeStock,
     } = req.body;
 
-    // Cloudinary URLs from multer-storage-cloudinary
-    const product_images = req.files?.map((file) => file.path); // Array of image URLs
+    const product_images = req.files?.map((file) => file.path);
 
     if (!product_images || product_images.length === 0) {
-      return res
-        .status(400)
-        .json({ success: false, message: "No images uploaded" });
+      return res.status(400).json({ success: false, message: "No images uploaded" });
     }
 
     const product = new Product({
@@ -29,27 +27,19 @@ exports.createProduct = async (req, res) => {
       price,
       discount_price,
       material,
-      size: size ? size.split(",") : [], // split if sent as comma string
-      quantity,
       category,
       product_images,
+      sizeStock: JSON.parse(sizeStock), 
     });
 
     await product.save();
-
-    res.status(201).json({
-      success: true,
-      message: "✅ Product created successfully",
-      product,
-    });
+    res.status(201).json({ success: true, message: "✅ Product created successfully", product });
   } catch (error) {
     console.error("Create product error:", error);
-    res.status(500).json({
-      success: false,
-      message: "❌ Failed to create product",
-    });
+    res.status(500).json({ success: false, message: "❌ Failed to create product" });
   }
 };
+
 
 exports.getAllProducts = async (req, res) => {
   try {

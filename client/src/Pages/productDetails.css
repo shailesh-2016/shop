@@ -1,0 +1,444 @@
+
+.product-detail-page {
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+
+:root {
+  --primary-color: #9D4BE0; /* Your brand's primary color (Purple) */
+  --primary-color-dark: #7C3BCE;
+  --primary-color-light: #D8C2F5;
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+  --danger-color: #dc3545; /* Your brand's danger color (Red) */
+  --info-color: #17a2b8; /* A suitable info color, or replace with your custom if defined */
+  --dark-color: #343a40; /* A suitable dark color */
+  --light-color: #f8f9fa; /* A suitable light color */
+  --white-color: #fff;
+}
+
+/* --- Product Image Gallery --- */
+.main-image-container {
+  height: 550px; /* Fixed height for main image */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Ensures image fits without overflow */
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.product-main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Use 'contain' to show full image, 'cover' if you want it to fill the space */
+  border-radius: 8px;
+}
+
+.thumbnail-gallery {
+  margin-top: 15px;
+}
+
+.thumbnail-image {
+  height: 80px; /* Slightly larger thumbnails */
+  width: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.thumbnail-image:hover {
+  border-color: var(--primary-color); /* Highlight on hover using custom primary */
+  transform: translateY(-2px);
+}
+
+.thumbnail-image.active-thumbnail {
+  border-color: var(--primary-color); /* Highlight selected thumbnail using custom primary */
+  box-shadow: 0 0 0 3px var(--primary-color-light); /* Lighter shade of primary for subtle glow */
+}
+
+/* --- Product Information --- */
+.product-info-col {
+  padding-left: 30px; /* More padding for details column */
+}
+
+.product-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.product-rating {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.star-icon {
+  color: gold; /* Gold for stars is standard */
+  margin-right: 5px;
+}
+
+.product-price {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary-color); /* Using custom primary color */
+  margin-bottom: 20px;
+}
+
+.product-description.lead {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+/* Blink effect for Out of Stock */
+.blink-text {
+  animation: blink-animation 1.5s infinite alternate; /* Slower and smoother blink */
+  color: var(--danger-color) !important; /* Using custom danger color */
+  font-weight: bold;
+}
+
+@keyframes blink-animation {
+  from { opacity: 1; }
+  to { opacity: 0.5; }
+}
+
+
+/* --- Material Options --- */
+.material-options .material-button {
+  min-width: 100px; /* Consistent width for material buttons */
+  padding: 10px 15px;
+  border-radius: 25px; /* Pill shape */
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+/* If you have a custom dark button, use it here, otherwise keep Bootstrap's */
+.material-options .material-button.btn-dark {
+  background-color: var(--dark-color); /* Using custom dark color */
+  border-color: var(--dark-color); /* Using custom dark color */
+  color: var(--white-color);
+}
+
+.material-options .material-button:hover:not(.btn-dark) {
+  background-color: var(--light-color); /* Light background on hover for outline */
+  border-color: var(--dark-color);
+}
+
+/* --- Size Options --- */
+.product-size-options {
+  justify-content: flex-start;
+}
+
+.product-size-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.size-button {
+  min-width: 65px; /* Slightly larger size buttons */
+  padding: 10px 18px;
+  border-radius: 10px; /* Softer rounded corners */
+  transition: all 0.2s ease-in-out;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.size-button.active {
+    background-color: var(--primary-color); /* Active size button uses primary color */
+    color: var(--white-color);
+    border-color: var(--primary-color);
+    transform: translateY(-3px); /* More pronounced lift */
+    box-shadow: 0 6px 12px var(--primary-color-light); /* Stronger subtle shadow with primary light */
+}
+
+.size-button:hover:not(:disabled) {
+  transform: translateY(-3px); /* More pronounced lift */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger subtle shadow */
+}
+
+.size-button.out-of-stock {
+  opacity: 0.5; /* More translucent for out of stock */
+  cursor: not-allowed;
+  border-style: solid; /* Solid border for clarity */
+  border-color: var(--danger-color); /* Red border using custom danger */
+  text-decoration: line-through; /* Strikethrough for out of stock */
+  color: var(--text-muted); /* Greyed out text */
+}
+
+.size-button.out-of-stock .badge {
+  font-size: 0.7em;
+  padding: 0.3em 0.6em;
+}
+
+.size-stock-info {
+  font-size: 0.8rem; /* Consistent font size */
+  margin-top: 5px;
+  min-height: 20px; /* Ensure consistent height for spacing */
+}
+
+.badge.bg-danger {
+  font-size: 0.75rem;
+  padding: 0.4em 0.7em;
+  border-radius: 50rem;
+  background-color: var(--danger-color) !important; /* Ensure red using custom danger */
+}
+
+
+/* --- Quantity Selector --- */
+.quantity-selector .qty-button {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%; /* Circular buttons */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1rem;
+  transition: background-color 0.2s ease;
+}
+
+.quantity-selector .qty-button:hover {
+  background-color: var(--light-color); /* Using custom light color */
+}
+
+.quantity-selector .qty-display {
+  min-width: 40px; /* Ensure consistent width */
+  text-align: center;
+}
+
+/* --- Cart Buttons --- */
+.add-to-cart-section .add-to-cart-btn {
+  background-color: var(--primary-color); /* Using custom primary color */
+  border-color: var(--primary-color); /* Using custom primary color */
+  font-weight: bold;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px var(--primary-color-light); /* Shadow using primary light */
+  color: var(--white-color) !important; /* Ensure text is white */
+}
+
+.add-to-cart-section .add-to-cart-btn:hover {
+  background-color: var(--primary-color-dark); /* Darker primary on hover */
+  border-color: var(--primary-color-dark); /* Darker primary on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--primary-color-light); /* Stronger shadow using primary light */
+}
+
+.add-to-cart-section .buy-now-btn {
+  font-weight: bold;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.add-to-cart-section .buy-now-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Tabs Section --- */
+.product-detail-tabs .nav-link {
+  font-weight: 600;
+  color: #666;
+  padding: 15px 25px;
+  border-radius: 8px 8px 0 0;
+  transition: all 0.2s ease;
+}
+
+.product-detail-tabs .nav-link.active {
+  color: var(--primary-color); /* Active tab text using custom primary */
+  border-color: var(--primary-color) !important; /* Active tab border using custom primary */
+  border-bottom: 3px solid var(--primary-color) !important; /* Active tab bottom border using custom primary */
+  background-color: var(--light-color); /* Light background for active tab */
+}
+
+.tab-content-area {
+  background-color: #fdfdfd;
+  min-height: 200px;
+  padding: 30px !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Reviews Section */
+.write-review-btn {
+  font-size: 1.1rem;
+  padding: 12px 25px;
+  border-radius: 30px; /* Pill shape */
+  box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2); /* Green shadow - keeping green as it's for "review" */
+  transition: all 0.3s ease;
+  background-color: #28a745; /* Bootstrap success green, could be a custom variable if you have one */
+  color: var(--white-color);
+  border-color: #28a745;
+}
+
+.write-review-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3);
+}
+
+.review-card {
+  border-left: 5px solid var(--info-color); /* Highlight reviews using custom info color */
+  border-radius: 8px;
+}
+
+.review-card .card-title {
+  color: #333;
+}
+
+.review-card .review-rating-badge {
+  font-size: 0.95rem;
+  padding: 0.5em 0.8em;
+  border-radius: 0.3em;
+  background-color: var(--info-color) !important; /* Using custom info color */
+  color: var(--white-color);
+}
+
+.review-card .review-date {
+  font-size: 0.9rem;
+}
+
+.review-card .review-comment {
+  font-style: italic;
+  color: #444;
+}
+
+/* --- Related Products Section --- */
+.related-products-section .section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.related-products-section .view-all-btn {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-muted); /* Using muted text color for view all */
+  text-decoration: none; /* Remove underline by default */
+}
+
+.related-products-section .view-all-btn:hover {
+  color: var(--primary-color); /* Primary color on hover */
+  text-decoration: underline; /* Underline on hover */
+}
+
+.related-products-slider .slick-prev,
+.related-products-slider .slick-next {
+  color: var(--primary-color) !important; /* Arrows ka color custom primary */
+  font-size: 2.5rem !important;
+  z-index: 1;
+}
+
+.related-products-slider .slick-prev:before,
+.related-products-slider .slick-next:before {
+  color: var(--primary-color) !important; /* For the actual arrow symbol using custom primary */
+}
+
+.related-product-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.related-product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.related-product-img {
+  height: 220px; /* Consistent image height */
+  object-fit: cover;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.related-product-card .card-body {
+  padding: 15px;
+}
+
+.related-product-card .truncate-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Assuming this is an outline primary button for related products */
+.related-product-card .btn-outline-primary {
+  border-radius: 20px;
+  font-weight: 500;
+  border: 1px solid var(--primary-color); /* Custom primary border */
+  color: var(--primary-color); /* Custom primary text */
+  background-color: transparent;
+}
+
+.related-product-card .btn-outline-primary:hover {
+    background-color: var(--primary-color); /* Custom primary background on hover */
+    color: var(--white-color); /* White text on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .product-detail-page .row {
+    flex-direction: column; /* Stack columns on smaller screens */
+  }
+
+  .product-info-col {
+    padding-left: 15px; /* Adjust padding */
+    margin-top: 30px;
+  }
+
+  .product-title {
+    font-size: 1.8rem;
+  }
+
+  .product-price {
+    font-size: 2rem;
+  }
+
+  .main-image-container {
+    height: 400px; /* Adjust height for smaller screens */
+  }
+
+  .thumbnail-image {
+    height: 60px;
+    width: 60px;
+  }
+
+  .add-to-cart-section {
+    position: sticky; /* Make add to cart section sticky */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--white-color); /* Use custom white */
+    padding: 15px;
+    border-top: 1px solid #eee;
+    z-index: 1000;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .product-detail-tabs .nav-link {
+    padding: 10px 15px;
+  }
+
+  .tab-content-area {
+    padding: 20px !important;
+  }
+
+  .related-products-section .section-title {
+    font-size: 1.5rem;
+  }
+}
+
+.price-color{
+  color: #9D4BE0 !important;
+}

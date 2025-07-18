@@ -1,9 +1,219 @@
-.banner-img {
-  height: 90vh;
-  object-fit: cover;
-  filter: brightness(0.9);
+/* --- Hero Carousel Styling --- */
+.main-hero-carousel .carousel .slide {
+  background: none; /* Remove default background */
 }
 
-.carousel-item {
-  transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+.main-hero-carousel .carousel .control-arrow {
+  opacity: 0.7; /* Make arrows slightly transparent */
+  transition: opacity 0.3s ease, background-color 0.3s ease;
+  background: rgba(0, 0, 0, 0.4); /* Darker background for arrows */
+  width: 50px; /* Wider arrows */
+  height: 80px; /* Taller arrows */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-hero-carousel .carousel .control-arrow:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.6); /* Darker on hover */
+}
+
+.main-hero-carousel .carousel .control-prev.control-arrow:before {
+  border-right: 15px solid #fff; /* White arrow */
+}
+
+.main-hero-carousel .carousel .control-next.control-arrow:before {
+  border-left: 15px solid #fff; /* White arrow */
+}
+
+/* --- Custom Indicators (Dots) --- */
+.main-hero-carousel .carousel .control-dots {
+  bottom: 20px; /* Position dots higher from bottom */
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto; /* Auto width to center properly */
+  padding: 10px 15px; /* Padding around dots */
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white background for dots */
+  border-radius: 50px; /* Pill shape for dot container */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-hero-carousel .carousel .control-dots .custom-indicator {
+  background: rgba(255, 255, 255, 0.6); /* Default dot color (semi-transparent white) */
+  width: 12px; /* Larger dots */
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 0 6px; /* Spacing between dots */
+  transition: all 0.3s ease;
+}
+
+.main-hero-carousel .carousel .control-dots .custom-indicator.selected {
+  background: #9D4BE0; /* Your primary color for active dot */
+  transform: scale(1.3); /* Slightly larger active dot */
+  box-shadow: 0 0 0 3px rgba(157, 75, 224, 0.4); /* Subtle glow for active dot */
+}
+
+.main-hero-carousel .carousel .control-dots .custom-indicator:not(.selected):hover {
+  background: rgba(255, 255, 255, 0.8); /* Lighter on hover for inactive dots */
+}
+
+/* --- Legend/Overlay Text Styling --- */
+.main-hero-carousel .custom-legend {
+  background: rgba(0, 0, 0, 0.45); /* Darker, slightly more opaque background for legend */
+  padding: 20px 30px;
+  border-radius: 8px;
+  max-width: 500px; /* Constrain width for better readability */
+  left: 50%;
+  transform: translateX(-50%); /* Center the legend */
+  bottom: 80px; /* Position above dots */
+  color: #fff;
+  text-align: center;
+  /* Add animation for legend */
+  animation: slideInUp 0.8s ease-out forwards;
+}
+
+.main-hero-carousel .custom-legend h3 {
+  font-size: 2.5rem; /* Larger heading for impact */
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #fff; /* Ensure white color */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Subtle text shadow */
+}
+
+.main-hero-carousel .custom-legend p {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 15px;
+}
+
+/* Custom Button within Legend */
+.btn-light-custom {
+  background-color: #fff !important;
+  color: #9D4BE0 !important; /* Button text matches primary theme color */
+  border: none;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 50px; /* Pill shape */
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-light-custom:hover {
+  background-color: #f0f0f0 !important;
+  transform: translateY(-3px); /* Lift on hover */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Keyframe for legend animation */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* --- Loading and Error States --- */
+.banner-loading-placeholder,
+.banner-error-message {
+  width: 100%;
+  background-color: #f2f2f2; /* Light background */
+  color: #666;
+  text-align: center;
+  padding: 50px 0;
+  font-size: 1.2rem;
+  min-height: 400px; /* Ensure minimum height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.banner-loading-placeholder .spinner-border {
+  width: 4rem;
+  height: 4rem;
+  border-width: 0.4em;
+  color: #9D4BE0 !important; /* Your primary color */
+}
+
+.banner-loading-placeholder p,
+.banner-error-message p {
+    color: #888;
+    margin-top: 15px;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 991.98px) {
+  .banner-image {
+    height: 450px !important; /* Adjusted height for tablets */
+  }
+  .main-hero-carousel .custom-legend {
+    max-width: 80%; /* Wider on smaller screens */
+    padding: 15px 20px;
+    bottom: 60px;
+  }
+  .main-hero-carousel .custom-legend h3 {
+    font-size: 2rem;
+  }
+  .main-hero-carousel .custom-legend p {
+    font-size: 0.95rem;
+  }
+  .btn-light-custom {
+    padding: 10px 25px;
+    font-size: 1rem;
+  }
+  .main-hero-carousel .carousel .control-arrow {
+    width: 40px;
+    height: 60px;
+  }
+  .main-hero-carousel .carousel .control-prev.control-arrow:before,
+  .main-hero-carousel .carousel .control-next.control-arrow:before {
+    border-width: 10px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .banner-image {
+    height: 350px !important; /* Adjusted height for mobile */
+  }
+  .main-hero-carousel .custom-legend {
+    width: 90%; /* Almost full width on mobile */
+    bottom: 40px; /* Closer to bottom */
+    padding: 10px 15px;
+  }
+  .main-hero-carousel .custom-legend h3 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+  .main-hero-carousel .custom-legend p {
+    font-size: 0.85rem;
+    display: none; /* Hide description on very small screens */
+  }
+  .btn-light-custom {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    width: 100%; /* Full width button */
+    max-width: 200px; /* Max width for consistency */
+  }
+  .main-hero-carousel .carousel .control-arrow {
+    display: none; /* Hide arrows on small mobile */
+  }
+  .main-hero-carousel .carousel .control-dots {
+    bottom: 10px; /* Push dots closer to bottom */
+    padding: 5px 10px;
+  }
+  .main-hero-carousel .carousel .control-dots .custom-indicator {
+    width: 8px;
+    height: 8px;
+    margin: 0 4px;
+  }
 }

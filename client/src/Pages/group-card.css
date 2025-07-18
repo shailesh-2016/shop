@@ -1,133 +1,286 @@
-.bg-light-gray {
-  background-color: #F1F5F9;
+/* --- New Arrivals Section General Styling --- */
+.new-arrivals-section {
+  background-color: #f8f9fa; /* Light background for the section */
+  padding: 60px 0; /* More padding top/bottom */
 }
 
-.product-card {
-  border: none;
-  transition: all 0.3s ease-in-out;
-  border-radius: 0.75rem;
-  overflow: hidden;
+.new-arrivals-section .section-header {
+  margin-bottom: 60px !important; /* More space below header */
 }
 
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+.new-arrivals-section .section-header h2 {
+  font-size: 2.5rem; /* Larger heading */
+  color: #333;
 }
 
-.product-img {
-  height: 220px;
-  object-fit: cover;
-  border-radius: 0.75rem 0.75rem 0 0;
+.new-arrivals-section .section-header h2 .text-primary-custom {
+  color: #9D4BE0 !important; /* Your primary color */
 }
 
-.btn-cart {
-  background-color: #7C3AED; /* Purple */
-  font-weight: 500;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem;
+.new-arrivals-section .section-header p {
+  font-size: 1.1rem;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto; /* Center align description */
 }
 
-.btn-cart:hover {
-  background-color: #6D28D9;
-}
-
-
-.product-card {
-  border: none;
-  transition: all 0.3s ease-in-out;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  position: relative;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-}
-
-.product-img {
-  height: 220px;
-  object-fit: cover;
-  border-radius: 0.75rem 0.75rem 0 0;
-}
-
-/* ✅ Hide initially */
-.add-to-cart-wrapper {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.3s ease-in-out;
-}
-
-/* Product card styling */
-.product-card {
-  border: none;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  position: relative;
-  transition: transform 0.3s ease;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-}
-
-.product-img {
-  height: 220px;
-  object-fit: cover;
-  border-radius: 0.75rem 0.75rem 0 0;
-}
-
-/* 👇 ADD TO CART hidden by default */
-.add-to-cart-wrapper {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* 👇 Show button on hover */
-.product-card:hover .add-to-cart-wrapper {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Button Styling */
-.btn-cart {
-  background-color: #7C3AED;
-  font-weight: 500;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem;
-  transition: background-color 0.3s ease;
-}
-
-.btn-cart:hover {
-  background-color: #6D28D9;
-}
-
-.card-body {
-  position: relative;
-  padding-bottom: 3.5rem; /* 👈 space for hidden button */
-}
-
-/* Button wrapper (initially hidden) */
-.add-to-cart-wrapper {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  right: 1rem;
-  opacity: 0;
-  transform: translateY(10px);
+.view-all-btn {
+  background-color: transparent !important;
+  border: 2px solid #9D4BE0 !important; /* Outline button with primary color */
+  color: #9D4BE0 !important;
+  font-weight: 600;
+  padding: 10px 25px; /* Larger padding */
+  border-radius: 50px; /* Pill-shaped button */
   transition: all 0.3s ease;
 }
 
-/* Show on hover */
-.product-card:hover .add-to-cart-wrapper {
-  opacity: 1;
-  transform: translateY(0);
+.view-all-btn:hover {
+  background-color: #9D4BE0 !important; /* Solid background on hover */
+  color: #fff !important;
+  transform: translateY(-3px); /* Lift effect */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
 }
+
+/* --- Product Card Styling --- */
+.product-card {
+  border: none !important; /* Remove default card border */
+  border-radius: 15px !important; /* More rounded corners */
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-10px); /* Significant lift on hover */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+}
+
+.product-img-wrapper {
+  overflow: hidden; /* Ensures image zoom stays within bounds */
+  border-radius: 15px 15px 0 0; /* Rounded top corners */
+}
+
+.product-img {
+  width: 100%;
+  height: 250px; /* Fixed height for consistency */
+  object-fit: cover;
+  transition: transform 0.4s ease; /* Smooth zoom transition */
+}
+
+.product-card:hover .product-img {
+  transform: scale(1.1); /* Zoom effect on image hover */
+}
+
+/* New Arrival Badge (Optional) */
+.new-arrival-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: #ffc107 !important; /* Bright yellow for 'New' */
+  color: #333 !important;
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  z-index: 2; /* Above other elements */
+}
+
+
+/* Product Actions (Heart & Cart Icons on Hover) */
+.product-actions {
+  position: absolute;
+  top: 15px; /* Adjusted position */
+  right: 15px;
+  display: flex; /* Display as flex to arrange icons */
+  flex-direction: column; /* Stack icons vertically */
+  gap: 10px; /* Space between icons */
+  opacity: 0; /* Hidden by default */
+  transform: translateX(10px); /* Start slightly to the right */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1; /* Below badge */
+}
+
+.product-card:hover .product-actions {
+  opacity: 1; /* Show on hover */
+  transform: translateX(0); /* Slide into view */
+}
+
+.icon-btn {
+  background-color: rgba(157, 75, 224, 0.8) !important; /* Primary color with transparency */
+  color: #fff !important;
+  border: none;
+  border-radius: 50%; /* Circle shape */
+  width: 40px; /* Fixed size */
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.icon-btn:hover {
+  background-color: #9D4BE0 !important; /* Solid primary on hover */
+  transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+/* Product Card Body */
+.product-card .card-body {
+  padding: 20px; /* More padding inside body */
+}
+
+.product-title-link {
+    text-decoration: none; /* Remove underline */
+}
+
+.product-title-link h6 {
+  font-size: 1.15rem; /* Slightly larger title */
+  margin-bottom: 10px;
+  color: #333; /* Dark text for title */
+  transition: color 0.2s ease;
+}
+
+.product-title-link:hover h6 {
+  color: #9D4BE0; /* Primary color on title hover */
+}
+
+.product-price {
+  font-size: 1.3rem; /* Larger price */
+  color: #9D4BE0 !important; /* Primary color for price */
+  font-weight: 700 !important; /* Bolder price */
+  margin-bottom: 20px; /* More space before button */
+}
+
+/* View Details Button */
+.view-details-btn {
+  background-color: #9D4BE0 !important; /* Primary color background */
+  border-color: #9D4BE0 !important; /* Primary color border */
+  color: #fff !important;
+  font-weight: 600;
+  padding: 12px 0; /* More vertical padding */
+  border-radius: 8px; /* Slightly rounded */
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.view-details-btn:hover {
+  background-color: #7C3BCE !important; /* Darker shade on hover */
+  border-color: #7C3BCE !important;
+  transform: translateY(-2px); /* Lift effect */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+}
+
+.view-details-btn svg {
+  margin-right: 8px; /* Space between icon and text */
+}
+
+/* --- Loading State Styling --- */
+.spinner-border.text-primary-custom {
+  width: 3.5rem; /* Larger spinner */
+  height: 3.5rem;
+  border-width: 0.4em;
+  color: #9D4BE0 !important; /* Primary color for spinner */
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 991.98px) {
+  .new-arrivals-section .section-header h2 {
+    font-size: 2.2rem;
+  }
+  .new-arrivals-section .section-header p {
+    font-size: 1rem;
+  }
+  .view-all-btn {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+  }
+  .product-img {
+    height: 220px;
+  }
+  .product-card .card-body {
+    padding: 15px;
+  }
+  .product-title-link h6 {
+    font-size: 1.05rem;
+  }
+  .product-price {
+    font-size: 1.2rem;
+  }
+  .view-details-btn {
+    font-size: 0.9rem;
+    padding: 10px 0;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .new-arrivals-section {
+    padding: 40px 0;
+  }
+  .new-arrivals-section .section-header {
+    margin-bottom: 40px !important;
+  }
+  .new-arrivals-section .section-header h2 {
+    font-size: 2rem;
+    text-align: center;
+  }
+  .new-arrivals-section .section-header p {
+    text-align: center;
+  }
+  .view-all-btn {
+    width: 100%; /* Full width button on small screens */
+    max-width: 250px; /* Max width for consistency */
+    margin: 20px auto 0 auto !important; /* Center on mobile */
+    display: block; /* Make it a block element to take full width */
+  }
+  .product-img {
+    height: 180px;
+  }
+  .product-card {
+    border-radius: 10px !important;
+  }
+  .product-img-wrapper {
+    border-radius: 10px 10px 0 0;
+  }
+  .product-actions {
+    top: 10px;
+    right: 10px;
+    gap: 8px;
+  }
+  .icon-btn {
+    width: 35px;
+    height: 35px;
+  }
+  .new-arrival-badge {
+    top: 10px;
+    left: 10px;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .new-arrivals-section .section-header h2 {
+    font-size: 1.8rem;
+  }
+  .new-arrivals-section .section-header p {
+    font-size: 0.9rem;
+  }
+  .product-img {
+    height: 160px;
+  }
+  .product-title-link h6 {
+    font-size: 1rem;
+  }
+  .product-price {
+    font-size: 1.1rem;
+  }
+}
+
+/* Ensure text-primary-custom is defined somewhere globally or in common.css */
+/* Example:
+.text-primary-custom {
+    color: #9D4BE0 !important;
+}
+*/
