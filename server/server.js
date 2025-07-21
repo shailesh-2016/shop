@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 3000;
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  "https://ecommerce-client-0jz9.onrender.com",
+  "https://ecommerce-frontend-0qy2.onrender.com",
   "https://ecommerce-admin-1492.onrender.com",
 ];
 

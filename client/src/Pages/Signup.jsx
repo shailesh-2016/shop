@@ -1,32 +1,34 @@
+// src/pages/SignupForm.jsx
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Eye, EyeOff } from "lucide-react"; // Import Eye and EyeOff icons
-import img2 from "../assets/image/img-2.jpg"; // Assuming this image is relevant for your signup page
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { registerUser } from "../redux/auth-slice"; // Your Redux slice for registration
-import { toast, ToastContainer } from "react-toastify"; // For notifications
-import "react-toastify/dist/ReactToastify.css"; // Toastify CSS
-import "./signup.css"
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Eye, EyeOff } from "lucide-react";
+import img2 from "../assets/image/img-2.jpg"; // ✅ Adjust path as per your structure
+import { registerUser } from "../redux/auth-slice/index"; // ✅ Adjust according to your redux path
+import "./signup.css";
 
 const SignupForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-    reset // Added reset to clear form after successful submission
   } = useForm();
 
   const [showPassword, setShowPassword] = useState(false);
-  const { isLoading, error } = useSelector((state) => state.auth); // Accessing error state
 
-  // Handle Redux error for global toast
+  // Get loading and error state from Redux
+  const { isLoading, error } = useSelector((state) => state.auth);
+
   useEffect(() => {
     if (error) {
-      toast.error(error); // Display Redux error
+      toast.error(error);
     }
   }, [error]);
 
@@ -36,26 +38,26 @@ const SignupForm = () => {
       return;
     }
 
-    // Remove repeatPassword before sending to API
     const { repeatPassword, ...formData } = data;
 
-    dispatch(registerUser(formData))
-      .unwrap()
-      .then((res) => {
-        toast.success("Signup successful! Please log in.");
-        reset(); // Clear form fields
-        navigate("/login");
-      })
-      .catch((err) => {
-        // Error handling already done by useEffect for global error state
-        // If you want specific error messages from catch, you can use:
-        // toast.error(err?.message || "Signup failed!");
-      });
+   dispatch(registerUser(formData))
+  .unwrap()
+  .then((res) => {
+    toast.success("Signup successful! Please log in.");
+    setTimeout(() => {
+      navigate("/login");
+    }, 1500);
+  })
+  .catch((err) => {
+    toast.error("Signup failed. Please try again.");
+  });
+
+
   };
 
   return (
-    <div className="signup-container"> {/* Main container for styling */}
-      <div className="row g-0 h-100"> {/* g-0 to remove gutter */}
+    <div className="signup-container">
+      <div className="row g-0 h-100">
         {/* Left Section: Signup Form */}
         <div className="col-md-6 d-flex flex-column justify-content-center align-items-center signup-form-section p-4 p-md-5">
           <div className="signup-content-wrapper text-center w-100">
@@ -75,7 +77,6 @@ const SignupForm = () => {
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   placeholder="Full name"
-                  aria-label="Full name"
                   {...register("name", { required: "Full name is required" })}
                 />
                 {errors.name && <div className="invalid-feedback">{errors.name.message}</div>}
@@ -87,7 +88,6 @@ const SignupForm = () => {
                   type="text"
                   className={`form-control ${errors.username ? "is-invalid" : ""}`}
                   placeholder="Username"
-                  aria-label="Username"
                   {...register("username", { required: "Username is required" })}
                 />
                 {errors.username && <div className="invalid-feedback">{errors.username.message}</div>}
@@ -99,11 +99,10 @@ const SignupForm = () => {
                   type="email"
                   className={`form-control ${errors.email ? "is-invalid" : ""}`}
                   placeholder="Email Address"
-                  aria-label="Email Address"
                   {...register("email", {
                     required: "Email is required",
                     pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i, // More robust email regex
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                       message: "Invalid email address",
                     },
                   })}
@@ -112,21 +111,20 @@ const SignupForm = () => {
               </div>
 
               {/* Password */}
-              <div className="form-group password-field">
+              <div className="form-group password-field position-relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   className={`form-control pe-5 ${errors.password ? "is-invalid" : ""}`}
                   placeholder="Password"
-                  aria-label="Password"
                   {...register("password", {
                     required: "Password is required",
                     minLength: { value: 6, message: "Password must be at least 6 characters" },
                   })}
                 />
                 <span
-                  className="password-toggle"
+                  className="password-toggle position-absolute top-50 end-0 translate-middle-y me-3"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  style={{ cursor: "pointer" }}
                 >
                   {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                 </span>
@@ -134,12 +132,11 @@ const SignupForm = () => {
               </div>
 
               {/* Confirm Password */}
-              <div className="form-group password-field">
+              <div className="form-group password-field position-relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   className={`form-control pe-5 ${errors.repeatPassword ? "is-invalid" : ""}`}
                   placeholder="Repeat Password"
-                  aria-label="Repeat Password"
                   {...register("repeatPassword", {
                     required: "Please repeat your password",
                     validate: (value) =>
@@ -147,9 +144,9 @@ const SignupForm = () => {
                   })}
                 />
                 <span
-                  className="password-toggle"
+                  className="password-toggle position-absolute top-50 end-0 translate-middle-y me-3"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  style={{ cursor: "pointer" }}
                 >
                   {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                 </span>
@@ -158,15 +155,8 @@ const SignupForm = () => {
                 )}
               </div>
 
-              <button type="submit" className="btn btn-primary-custom w-100 mt-3" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    Signing up...
-                  </>
-                ) : (
-                  "Sign up"
-                )}
+              <button type="submit" className="btn btn-primary-custom w-100 mt-3" >
+               Sign Up
               </button>
 
               <p className="text-center text-muted mt-3">
@@ -189,8 +179,6 @@ const SignupForm = () => {
         </div>
       </div>
 
-      {/* Toast Message Container */}
-      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
     </div>
   );
 };

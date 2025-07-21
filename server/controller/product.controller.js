@@ -10,7 +10,6 @@ exports.createProduct = async (req, res) => {
       product_description,
       price,
       discount_price,
-      material,
       category,
       sizeStock,
     } = req.body;
@@ -26,7 +25,6 @@ exports.createProduct = async (req, res) => {
       product_description,
       price,
       discount_price,
-      material,
       category,
       product_images,
       sizeStock: JSON.parse(sizeStock), 
@@ -74,39 +72,35 @@ exports.updateProduct = async (req, res) => {
   try {
     const updatedData = { ...req.body };
 
-    // If new images uploaded
+    // ✅ Parse sizeStock if it's a string
+    if (updatedData.sizeStock && typeof updatedData.sizeStock === 'string') {
+      updatedData.sizeStock = JSON.parse(updatedData.sizeStock);
+    }
+
+    // ✅ Handle image updates
     if (req.files && req.files.length > 0) {
       updatedData.product_images = req.files.map((file) => file.path);
     }
 
-    if (updatedData.size && typeof updatedData.size === "string") {
-      updatedData.size = updatedData.size.split(",");
-    }
-
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      updatedData,
-      { new: true }
-    );
+    const product = await Product.findByIdAndUpdate(req.params.id, updatedData, {
+      new: true,
+    });
 
     if (!product) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
+      return res.status(404).json({ success: false, message: 'Product not found' });
     }
 
     res.status(200).json({
       success: true,
-      message: "✅ Product updated successfully",
+      message: '✅ Product updated successfully',
       product,
     });
   } catch (error) {
-    console.error("Update product error:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "❌ Failed to update product" });
+    console.error('Update product error:', error);
+    res.status(500).json({ success: false, message: '❌ Failed to update product' });
   }
 };
+
 
 exports.deleteProduct = async (req, res) => {
   try {
@@ -221,3 +215,38 @@ exports.getProductsByCategoryId = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+
+
+
+exports.reduceStockAfterOrder = async (req, res) => {
+  try {
+    const { productId, selectedSize, quantity } = req.body;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+    const sizeIndex = product.sizeStock.findIndex((s) => s.size === selectedSize);
+    if (sizeIndex === -1) {
+      return res.status(400).json({ success: false, message: "Invalid size selected" });
+    }
+    if (product.sizeStock[sizeIndex].stock < quantity) {
+      return res.status(400).json({ success: false, message: "Insufficient stock" });
+    }
+    // Never allow negative/zero cases!
+    product.sizeStock[sizeIndex].stock -= quantity;
+    await product.save();
+
+    res.status(200).json({
+      success: true,
+      message: `Stock updated for size ${selectedSize}`,
+      updatedStock: product.sizeStock[sizeIndex],
+    });
+  } catch (error) {
+    console.error("Reduce stock error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+

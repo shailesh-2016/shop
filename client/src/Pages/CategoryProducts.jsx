@@ -15,9 +15,10 @@ const CategoryProducts = () => {
 
   const fetchCategoryProducts = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:8000/api/products/category/${id}`
-      );
+     const res = await axios.get(
+  `${import.meta.env.VITE_BASE_URL_PRODUCTS}/category/${id}`
+);
+
       setProducts(res.data);
 
       if (res.data.length > 0) {

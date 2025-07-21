@@ -9,9 +9,10 @@ const CategoryGrid = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/category", {
+      const res = await axios.get(import.meta.env.VITE_BASE_URL_CATEGORY, {
         withCredentials: true,
       });
+
       setCategories(res.data);
     } catch (err) {
       console.error("Error fetching categories:", err);
@@ -60,7 +61,8 @@ const CategoryGrid = () => {
                 }}
               >
                 <h5 className="fw-bold mb-1">{cat.cat_name}</h5>
-                <p className="mb-0 small">42 Products</p> {/* 👉 You can replace this with actual product count later */}
+                <p className="mb-0 small">42 Products</p>{" "}
+                {/* 👉 You can replace this with actual product count later */}
               </div>
             </div>
           </div>

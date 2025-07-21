@@ -91,7 +91,6 @@ exports.login = async (req, res) => {
 };
 
 
-// ✅ LOGOUT
 exports.logoutUser = (req, res) => {
   res.clearCookie("token").json({
     success: true,
@@ -101,7 +100,6 @@ exports.logoutUser = (req, res) => {
 
 
 
-// ✅ AUTH MIDDLEWARE
 exports.authMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
   if (!token)

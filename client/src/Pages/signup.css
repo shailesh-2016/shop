@@ -204,3 +204,30 @@
     font-size: 0.8em;
   }
 }
+
+
+.signup-container {
+  min-height: 100vh;
+  background-color: #fff;
+}
+
+.signup-form-section {
+  background-color: #f8f9fa;
+}
+
+.btn-primary-custom {
+  background-color: #b8860b;
+  border: none;
+}
+
+.btn-primary-custom:hover {
+  background-color: #a0700b;
+}
+
+.password-toggle {
+  color: #999;
+}
+
+.brand-highlight {
+  color: #b8860b;
+}

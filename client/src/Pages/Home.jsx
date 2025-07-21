@@ -13,7 +13,7 @@ const Home = () => {
     const fetchBanners = async () => {
       try {
         setLoading(true); // Set loading to true before fetching
-        const res = await axios.get("http://localhost:8000/api/banner"); // ✅ update if different
+const res = await axios.get(import.meta.env.VITE_BASE_URL_BANNER);
         setBanners(res.data.banners || []);
       } catch (err) {
         console.error("❌ Failed to fetch banners:", err);

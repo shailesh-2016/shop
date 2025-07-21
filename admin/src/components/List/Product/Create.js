@@ -137,18 +137,7 @@ const Create = () => {
               <CFormInput type="number" {...register('discount_price')} />
             </div>
 
-            {/* Material */}
-            <div className="mb-3">
-              <CFormLabel>Material</CFormLabel>
-              <CFormSelect {...register('material', { required: 'Material is required' })}>
-                <option value="">-- Select Material --</option>
-                <option value="18K Gold">18K Gold</option>
-                <option value="22K Gold">22K Gold</option>
-                <option value="Rose Gold">Rose Gold</option>
-                <option value="White Gold">White Gold</option>
-              </CFormSelect>
-              {errors.material && <p className="text-danger">{errors.material.message}</p>}
-            </div>
+         
 
             {/* ✅ Size & Stock */}
             <div className="mb-3">
@@ -167,16 +156,7 @@ const Create = () => {
               ))}
             </div>
 
-            {/* Quantity */}
-            <div className="mb-3">
-              <CFormLabel>Total Quantity</CFormLabel>
-              <CFormInput
-                type="number"
-                defaultValue={1}
-                {...register('quantity', { required: 'Quantity is required' })}
-              />
-              {errors.quantity && <p className="text-danger">{errors.quantity.message}</p>}
-            </div>
+         
 
             {/* Images */}
             <div className="mb-3">

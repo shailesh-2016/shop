@@ -1,12 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// 🌐 Base URL from .env
+const BASE_URL = import.meta.env.VITE_BASE_URL_WISHLIST;
+
 // ✅ Add to Wishlist
 export const addToWishlist = createAsyncThunk(
   "wishlist/addToWishlist",
   async (product, { rejectWithValue }) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/wishlist", product);
+      const res = await axios.post(`${BASE_URL}`, product);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to add to wishlist");
@@ -19,7 +22,7 @@ export const getWishlist = createAsyncThunk(
   "wishlist/getWishlist",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get("http://localhost:8000/api/wishlist");
+      const res = await axios.get(`${BASE_URL}`);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch wishlist");
@@ -32,7 +35,7 @@ export const removeFromWishlist = createAsyncThunk(
   "wishlist/removeFromWishlist",
   async (id, { rejectWithValue }) => {
     try {
-      await axios.delete(`http://localhost:8000/api/wishlist/${id}`);
+      await axios.delete(`${BASE_URL}/${id}`);
       return id;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to remove from wishlist");

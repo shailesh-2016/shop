@@ -9,9 +9,11 @@ const OrderSuccessPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const BASE_URL = import.meta.env.VITE_BASE_URL_ORDER;
+
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/order/user/${user.id}`);
+      const res = await axios.get(`${BASE_URL}/user/${user.id}`);
       if (res.data.success) {
         setOrders(res.data.orders);
       } else {
@@ -33,7 +35,7 @@ const OrderSuccessPage = () => {
 
   return (
     <Container className="my-5">
-      <h4 className="mb-3">🎉 Order Placed Successfully!</h4>
+      <h4 className="mb-3">🎉 My Orders</h4>
       <p>Here are your recent orders:</p>
 
       {loading ? (
@@ -45,10 +47,13 @@ const OrderSuccessPage = () => {
           <Card className="mb-4 shadow-sm" key={order._id}>
             <Card.Body>
               <h5 className="mb-3">🧾 Order ID: {order._id}</h5>
-              <p><strong>Total Amount:</strong> ₹{order.totalAmount}</p>
               <p>
-                <strong>Shipping To:</strong> {order.shippingInfo.address}, {order.shippingInfo.city},{" "}
-                {order.shippingInfo.state} - {order.shippingInfo.zipCode}
+                <strong>Total Amount:</strong> ₹{order.totalAmount}
+              </p>
+              <p>
+                <strong>Shipping To:</strong> {order.shippingInfo.address},{" "}
+                {order.shippingInfo.city}, {order.shippingInfo.state} -{" "}
+                {order.shippingInfo.zipCode}
               </p>
               <hr />
               {order.products.map((item, index) => (

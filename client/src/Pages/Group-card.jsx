@@ -13,7 +13,7 @@ const Arrival = () => {
     const fetchNewArrivals = async () => {
       try {
         setLoading(true); // Set loading true before fetching
-        const res = await axios.get("http://localhost:8000/api/products");
+const res = await axios.get(import.meta.env.VITE_BASE_URL_PRODUCTS);
         const allProducts = res.data.products;
         const sorted = allProducts.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)

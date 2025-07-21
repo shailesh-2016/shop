@@ -19,7 +19,6 @@ import "react-toastify/dist/ReactToastify.css";
 import ScrollToTop from "./components/Scroll";
 import Loader from "./components/Loader";
 import CheckoutPage from "./components/Checkout";
-import PaymentPage from "./components/PaymentPage";
 import OrderSuccessPage from "./components/OrderPage";
 
 const AppContent = () => {
@@ -58,8 +57,8 @@ const AppContent = () => {
         <Route path="/wish" element={<Wishlist />} />
         <Route path="/categorypr/:id" element={<CategoryProducts />} />
         <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/order-success" element={<OrderSuccessPage />} />
+        {/* <Route path="/payment" element={<PaymentPage />} /> */}
+        <Route path="/my-order" element={<OrderSuccessPage />} />
 
 
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 // Header.css ko import karna na bhulein!
-import "../Layout/header.css"; 
+import "../Layout/header.css";
 import { Heart, Menu, Search, ShoppingCart, User } from "lucide-react";
 import logo from "../assets/image/logo.png";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -42,17 +42,27 @@ const Header = () => {
   return (
     <>
       {/* --- Announcement Bar (Top Navbar) --- */}
-      <div className="announcement-bar py-2 text-center bg-dark text-white d-none d-md-block"> {/* d-none d-md-block for mobile hide */}
+      <div className="announcement-bar py-2 text-center bg-dark text-white d-none d-md-block">
+        {" "}
+        {/* d-none d-md-block for mobile hide */}
         <div className="container-fluid d-flex justify-content-between align-items-center">
           <p className="mb-0 mx-auto">
             <small>Free shipping on all orders above ₹499</small>
           </p>
           <div className="d-flex gap-3">
-            <a href="tel:+918300083000" className="text-white text-decoration-none d-flex align-items-center">
-              <i className="bi bi-telephone-fill me-1"></i> <small>+91 83000 83000</small>
+            <a
+              href="tel:+918300083000"
+              className="text-white text-decoration-none d-flex align-items-center"
+            >
+              <i className="bi bi-telephone-fill me-1"></i>{" "}
+              <small>+91 83000 83000</small>
             </a>
-            <a href="mailto:kukujewel@gmail.com" className="text-white text-decoration-none d-flex align-items-center">
-              <i className="bi bi-envelope-fill me-1"></i> <small>kukujewel@gmail.com</small>
+            <a
+              href="mailto:kukujewel@gmail.com"
+              className="text-white text-decoration-none d-flex align-items-center"
+            >
+              <i className="bi bi-envelope-fill me-1"></i>{" "}
+              <small>kukujewel@gmail.com</small>
             </a>
           </div>
         </div>
@@ -82,19 +92,32 @@ const Header = () => {
             {/* Navigation Links */}
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0 main-nav-links">
               <li className="nav-item">
-                <NavLink className="nav-link" to="/">Home</NavLink> {/* Changed to "/" for home */}
+                <NavLink className="nav-link" to="/">
+                  Home
+                </NavLink>{" "}
+                {/* Changed to "/" for home */}
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/products">All Products</NavLink>
+                <NavLink className="nav-link" to="/products">
+                  All Products
+                </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/category">Categories</NavLink> {/* Changed to Categories */}
+                <NavLink className="nav-link" to="/category">
+                  Categories
+                </NavLink>{" "}
+                {/* Changed to Categories */}
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/about">About Us</NavLink>
+                <NavLink className="nav-link" to="/about">
+                  About Us
+                </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/contact">Contact Us</NavLink> {/* Changed to Contact Us */}
+                <NavLink className="nav-link" to="/contact">
+                  Contact Us
+                </NavLink>{" "}
+                {/* Changed to Contact Us */}
               </li>
             </ul>
 
@@ -107,21 +130,33 @@ const Header = () => {
 
               {/* Cart Icon */}
               <div className="position-relative">
-                <NavLink to="/cart" className="icon-wrapper clickable-icon" aria-label="Shopping Cart">
+                <NavLink
+                  to="/cart"
+                  className="icon-wrapper clickable-icon"
+                  aria-label="Shopping Cart"
+                >
                   <ShoppingCart size={20} color="#555" />
                 </NavLink>
                 {cartCount > 0 && (
-                  <span className="icon-badge badge bg-danger rounded-pill">{cartCount}</span>
+                  <span className="icon-badge badge bg-danger rounded-pill">
+                    {cartCount}
+                  </span>
                 )}
               </div>
 
               {/* Wishlist Icon */}
               <div className="position-relative">
-                <NavLink to="/wish" className="icon-wrapper clickable-icon" aria-label="Wishlist">
+                <NavLink
+                  to="/wish"
+                  className="icon-wrapper clickable-icon"
+                  aria-label="Wishlist"
+                >
                   <Heart size={20} color="#555" />
                 </NavLink>
                 {wishlistCount > 0 && (
-                  <span className="icon-badge badge bg-danger rounded-pill">{wishlistCount}</span>
+                  <span className="icon-badge badge bg-danger rounded-pill">
+                    {wishlistCount}
+                  </span>
                 )}
               </div>
 
@@ -145,13 +180,54 @@ const Header = () => {
                   >
                     {!isAuthenticated ? (
                       <>
-                        <li><NavLink className="dropdown-item" to="/login" onClick={() => setShowDropdown(false)}>Login</NavLink></li>
-                        <li><NavLink className="dropdown-item" to="/signup" onClick={() => setShowDropdown(false)}>Signup</NavLink></li>
+                        <li>
+                          <NavLink
+                            className="dropdown-item"
+                            to="/login"
+                            onClick={() => setShowDropdown(false)}
+                          >
+                            Login
+                          </NavLink>
+                        </li>
+                        <li>
+                          <NavLink
+                            className="dropdown-item"
+                            to="/signup"
+                            onClick={() => setShowDropdown(false)}
+                          >
+                            Signup
+                          </NavLink>
+                        </li>
                       </>
                     ) : (
                       <>
-                        <li><NavLink className="dropdown-item" to="/profile" onClick={() => setShowDropdown(false)}>My Profile</NavLink></li> {/* Added Profile Link */}
-                        <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
+                        <li>
+                          <NavLink
+                            className="dropdown-item"
+                            to="/profile"
+                            onClick={() => setShowDropdown(false)}
+                          >
+                            My Profile
+                          </NavLink>
+                        </li>
+                        <li>
+                          <NavLink
+                            className="dropdown-item"
+                            to="/my-order"
+                            onClick={() => setShowDropdown(false)}
+                          >
+                            My Orders
+                          </NavLink>
+                        </li>{" "}
+                        {/* My Orders Link Add Kiya Hai */}
+                        <li>
+                          <button
+                            className="dropdown-item"
+                            onClick={handleLogout}
+                          >
+                            Logout
+                          </button>
+                        </li>
                       </>
                     )}
                   </ul>

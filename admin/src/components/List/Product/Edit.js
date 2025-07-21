@@ -8,15 +8,16 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
-  CFormCheck,
 } from '@coreui/react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { editPro, viewPro } from '../productSlice'
 import { viewCat } from '../userSlice'
 import Swal from 'sweetalert2'
+
+const sizeOptions = ['XS', 'S', 'M', 'L', 'XL']
 
 const Edit = () => {
   const dispatch = useDispatch()
@@ -30,28 +31,47 @@ const Edit = () => {
     register,
     handleSubmit,
     setValue,
-    getValues,
     formState: { errors },
   } = useForm()
+
+  const [sizeStock, setSizeStock] = useState(
+    sizeOptions.map((sz) => ({ size: sz, stock: 0 }))
+  )
+
+  const single = productList.find((p) => p._id === id)
 
   useEffect(() => {
     dispatch(viewPro())
     dispatch(viewCat())
   }, [dispatch])
 
-  const single = productList.find((p) => p._id === id)
-
   useEffect(() => {
     if (single) {
-      setValue('category', single.category?._id || single.category) // handle both object or string
+      setValue('category', single.category?._id || single.category)
       setValue('product_name', single.product_name)
       setValue('product_description', single.product_description)
       setValue('price', single.price)
       setValue('discount_price', single.discount_price)
       setValue('material', single.material)
       setValue('quantity', single.quantity)
+
+      // ✅ Set size stock if available
+      if (single.sizeStock?.length > 0) {
+        setSizeStock(
+          sizeOptions.map((size) => {
+            const match = single.sizeStock.find((s) => s.size === size)
+            return { size, stock: match ? match.stock : 0 }
+          })
+        )
+      }
     }
   }, [single, setValue])
+
+  const handleSizeStockChange = (index, value) => {
+    const newSizes = [...sizeStock]
+    newSizes[index].stock = parseInt(value) || 0
+    setSizeStock(newSizes)
+  }
 
   const onSubmit = async (data) => {
     try {
@@ -66,8 +86,9 @@ const Edit = () => {
       formData.append('product_description', data.product_description)
       formData.append('price', data.price)
       formData.append('discount_price', data.discount_price || 0)
-      formData.append('material', data.material)
-      formData.append('quantity', data.quantity)
+
+      // ✅ Send sizeStock
+      formData.append('sizeStock', JSON.stringify(sizeStock))
 
       await dispatch(editPro({ id, formData }))
 
@@ -104,7 +125,6 @@ const Edit = () => {
                   </option>
                 ))}
               </CFormSelect>
-
               {errors.category && <p className="text-danger">{errors.category.message}</p>}
             </div>
 
@@ -134,36 +154,31 @@ const Edit = () => {
               {errors.price && <p className="text-danger">{errors.price.message}</p>}
             </div>
 
-            {/* Discount Price */}
+            {/* Discount */}
             <div className="mb-3">
               <CFormLabel>Discount Price</CFormLabel>
               <CFormInput type="number" {...register('discount_price')} />
             </div>
 
-            {/* Material */}
+          
+            {/* ✅ Size & Stock */}
             <div className="mb-3">
-              <CFormLabel>Material</CFormLabel>
-              <CFormSelect {...register('material', { required: 'Material is required' })}>
-                <option value="">-- Select Material --</option>
-                <option value="18K Gold">18K Gold</option>
-                <option value="22K Gold">22K Gold</option>
-                <option value="Rose Gold">Rose Gold</option>
-                <option value="White Gold">White Gold</option>
-              </CFormSelect>
-              {errors.material && <p className="text-danger">{errors.material.message}</p>}
+              <CFormLabel>Size & Stock</CFormLabel>
+              {sizeStock.map((item, index) => (
+                <div className="d-flex align-items-center gap-3 mb-2" key={item.size}>
+                  <strong style={{ width: 40 }}>{item.size}</strong>
+                  <CFormInput
+                    type="number"
+                    min={0}
+                    placeholder="Enter stock"
+                    value={item.stock}
+                    onChange={(e) => handleSizeStockChange(index, e.target.value)}
+                  />
+                </div>
+              ))}
             </div>
 
-            {/* Quantity */}
-            <div className="mb-3">
-              <CFormLabel>Quantity</CFormLabel>
-              <CFormInput
-                type="number"
-                {...register('quantity', { required: 'Quantity is required' })}
-              />
-              {errors.quantity && <p className="text-danger">{errors.quantity.message}</p>}
-            </div>
-
-            {/* Product Images */}
+            {/* Images */}
             <div className="mb-3">
               <CFormLabel>Upload Product Images</CFormLabel>
               <CFormInput type="file" multiple accept="image/*" {...register('product_images')} />

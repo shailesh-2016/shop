@@ -1,4 +1,3 @@
-// src/pages/CheckoutPage.jsx
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { loadRazorpayScript } from "../utils/loadRazorpay";
@@ -57,15 +56,15 @@ const CheckoutPage = () => {
     if (!scriptLoaded) return toast.error("❌ Razorpay SDK failed to load");
 
     try {
-      // ✅ Step 1: Create order on backend
-     const { data } = await axios.post(
-  "http://localhost:8000/api/payment/checkout", // ✅ corrected route
+    const { data } = await axios.post(
+  `${import.meta.env.VITE_BASE_URL_PAYMENT}/checkout`,
   { amount: totalAmount },
   { withCredentials: true }
 );
 
 
-      // ✅ Step 2: Configure Razorpay
+const ORDER_API = import.meta.env.VITE_BASE_URL_ORDER;
+
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY, 
         amount: totalAmount * 100,
@@ -75,8 +74,8 @@ const CheckoutPage = () => {
         order_id: data.order.id,
         handler: async (response) => {
           try {
-            await axios.post(
-              "http://localhost:8000/api/order/create",
+             await axios.post(
+        `${ORDER_API}/create`,
               {
                 userId: user?.id,
                 products,
@@ -108,7 +107,6 @@ if (!loaded) {
   toast.error("Razorpay script failed");
   return;
 }
-// ✅ Tabhi yahan Razorpay create karo
 const razorpay = new window.Razorpay(options);
 razorpay.open();
 
@@ -250,7 +248,6 @@ razorpay.open();
         </Col>
       </Row>
 
-      <ToastContainer position="top-right" autoClose={2500} theme="colored" />
     </Container>
   );
 };
