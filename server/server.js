@@ -11,8 +11,6 @@ const wishlist = require("./routes/wishlist.route");
 const bannerRoute = require("./routes/banner.route");
 const paymentRoute = require("./routes/payment.route");
 const orderRoute = require("./routes/order.route");
-const path = require('path');
-
 
 
 
@@ -47,12 +45,6 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve frontend static files
-app.use(express.static(path.join(__dirname, 'client/build')));
-
-
-
-
 app.use("/api/auth", authRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/products", products);
@@ -64,9 +56,7 @@ app.use("/api/order", orderRoute);
 
 
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
+
 
 app.get("/", (req, res) => res.send("Hello World!"));
 app.listen(PORT, () => console.log(`Example app listening on PORT ${PORT}!`));
