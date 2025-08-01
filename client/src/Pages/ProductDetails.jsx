@@ -14,8 +14,7 @@ import {
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../redux/cart-slice/cartSlice";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import ReviewModal from "../components/ReviewModel";
 import { FaStar, FaPlus, FaMinus } from "react-icons/fa";
 import Slider from "react-slick";
@@ -45,12 +44,10 @@ const ProductDetail = () => {
   const user = useSelector((state) => state.auth.user);
   const userId = user?.id || user?._id;
 
-  // Calculate stock for selected size
   const selectedSizeStock =
     product?.sizeStock?.find((s) => s.size === size)?.stock ?? 0;
 
   useEffect(() => {
-    // Product Data Fetch
     const fetchProduct = async () => {
       try {
         const res = await axios.get(
@@ -66,7 +63,7 @@ const ProductDetail = () => {
         toast.error("Failed to load product");
       }
     };
-    // Review Data Fetch
+
     const fetchReviews = async () => {
       try {
         const res = await axios.get(
@@ -77,11 +74,11 @@ const ProductDetail = () => {
         toast.error("Failed to load reviews");
       }
     };
+
     fetchProduct();
     fetchReviews();
   }, [id]);
 
-  // Related
   const fetchRelatedProducts = async (categoryId) => {
     try {
       const res = await axios.get(
@@ -98,24 +95,21 @@ const ProductDetail = () => {
     if (user?.name) setReviewForm((prev) => ({ ...prev, userName: user.name }));
   }, [user]);
 
-  // Reset qty on size change
   useEffect(() => {
     setQty(1);
   }, [size]);
 
-  // -------- Quantity Change Handlers ------
   const handleDecreaseQty = () => setQty(qty > 1 ? qty - 1 : 1);
 
   const handleIncreaseQty = () => {
     if (!size) return toast.error("Select size first");
     if (qty < selectedSizeStock) setQty(qty + 1);
-    else toast.info(`Only ${selectedSizeStock} items left in stock`);
+    else toast("Only limited stock left", { icon: "⚠️" });
   };
 
-  // -------- Add to Cart ----------
   const handleAddToCart = () => {
     if (!userId) {
-      toast.warn("Please login to add to cart");
+      toast("Please login to add to cart", { icon: "🔑" });
       return navigate("/login");
     }
     if (!size || !material) return toast.error("Select size & material");
@@ -141,10 +135,9 @@ const ProductDetail = () => {
       .catch(() => toast.error("Failed to add to cart"));
   };
 
-  // -------- BUY NOW logic (reduces stock) ----------
   const handleBuyNow = async () => {
     if (!userId) {
-      toast.warn("Please login to continue");
+      toast("Please login to continue", { icon: "🔑" });
       return navigate("/login");
     }
     if (!size || !material)
@@ -164,7 +157,6 @@ const ProductDetail = () => {
         }
       );
       toast.success("Order placed, stock updated!");
-      // You can redirect to order summary/payment etc. here
     } catch (error) {
       toast.error(
         error?.response?.data?.message ||
@@ -173,7 +165,6 @@ const ProductDetail = () => {
     }
   };
 
-  // ----- Review Handling (you can keep as in your code) -----
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     const reviewData = {
@@ -234,12 +225,15 @@ const ProductDetail = () => {
                 key={index}
                 src={img}
                 alt={`thumbnail-${index}`}
-                className={`img-thumbnail thumbnail-image ${mainImage === img ? "active-thumbnail" : ""}`}
+                className={`img-thumbnail thumbnail-image ${
+                  mainImage === img ? "active-thumbnail" : ""
+                }`}
                 onClick={() => setMainImage(img)}
               />
             ))}
           </div>
         </Col>
+
         {/* Product Details */}
         <Col md={6} className="product-info-col">
           <h1 className="product-title">{product.product_name}</h1>
@@ -288,7 +282,9 @@ const ProductDetail = () => {
                         else toast.error("Out of Stock");
                       }}
                       disabled={stock === 0}
-                      className={`position-relative size-button ${stock === 0 ? "out-of-stock" : ""}`}
+                      className={`position-relative size-button ${
+                        stock === 0 ? "out-of-stock" : ""
+                      }`}
                     >
                       {sz}
                       {stock === 0 && (
@@ -296,7 +292,9 @@ const ProductDetail = () => {
                           pill
                           bg="danger"
                           className="position-absolute top-0 start-100 translate-middle"
-                        >Out</Badge>
+                        >
+                          Out
+                        </Badge>
                       )}
                     </Button>
                     <div className="size-stock-info mt-1">
@@ -347,7 +345,9 @@ const ProductDetail = () => {
                 (selectedSizeStock === 0 ? (
                   <span className="text-danger fw-semibold">Out of Stock</span>
                 ) : selectedSizeStock < 10 ? (
-                  <span className="text-warning">Only {selectedSizeStock} left!</span>
+                  <span className="text-warning">
+                    Only {selectedSizeStock} left!
+                  </span>
                 ) : (
                   <span className="text-success">In Stock</span>
                 ))}
@@ -378,7 +378,7 @@ const ProductDetail = () => {
         </Col>
       </Row>
 
-      {/* Tabs for Description and Reviews */}
+      {/* Tabs */}
       <Tabs defaultActiveKey="description" className="mt-5 product-detail-tabs">
         <Tab eventKey="description" title="Description">
           <div className="tab-content-area p-4 border border-top-0 rounded-bottom">
@@ -398,7 +398,7 @@ const ProductDetail = () => {
                   className="write-review-btn mb-4"
                   onClick={() => {
                     if (!userId) {
-                      toast.warn("Please login to write a review");
+                      toast("Please login to write a review", { icon: "✍️" });
                       navigate("/login");
                     } else {
                       setShowReviewModal(true);
@@ -414,7 +414,10 @@ const ProductDetail = () => {
                   <p className="text-muted">No reviews yet. Be the first!</p>
                 ) : (
                   reviews.map((rev, idx) => (
-                    <Card key={rev._id || idx} className="mb-3 review-card shadow-sm">
+                    <Card
+                      key={rev._id || idx}
+                      className="mb-3 review-card shadow-sm"
+                    >
                       <Card.Body>
                         <div className="d-flex justify-content-between align-items-center mb-2">
                           <Card.Title className="mb-0 fs-5">{rev.name}</Card.Title>
@@ -504,8 +507,6 @@ const ProductDetail = () => {
         setReviewForm={setReviewForm}
         handleReviewSubmit={handleReviewSubmit}
       />
-
-      <ToastContainer position="top-right" autoClose={2500} theme="colored" />
     </Container>
   );
 };

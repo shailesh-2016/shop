@@ -1,52 +1,46 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Trash } from "lucide-react";
-import {
-  Button,
-  Container,
-  Row,
-  Col,
-  Table,
-  Spinner,
-  Card,
-} from "react-bootstrap";
-import { toast, ToastContainer } from "react-toastify";
+import { Button, Container, Row, Col, Table, Spinner, Card } from "react-bootstrap";
+import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { checkAuth } from "../redux/auth-slice";
 import { fetchCart, deleteCartItem } from "../redux/cart-slice/cartSlice";
-import "react-toastify/dist/ReactToastify.css";
 
 const CartPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { cartItems, loading } = useSelector((state) => state.cart);
-  const { user } = useSelector((state) => state.auth);
-  const userId = user?.id;
+  const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);
 
+  // ✅ Run checkAuth only on first mount
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
 
+  // ✅ Wait for checkAuth to finish before deciding redirect
   useEffect(() => {
-    if (userId) {
-      dispatch(fetchCart(userId));
+    if (!isLoading) {
+      if (!isAuthenticated || !user) {
+        navigate("/login");
+      }
     }
-  }, [dispatch, userId]);
+  }, [isLoading, isAuthenticated, user, navigate]);
+
+  // ✅ Fetch cart only after user is confirmed
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && user?.id) {
+      dispatch(fetchCart(user.id));
+    }
+  }, [dispatch, isLoading, isAuthenticated, user]);
 
   const handleDelete = (cartItemId) => {
     if (window.confirm("Are you sure you want to remove this item?")) {
       dispatch(deleteCartItem(cartItemId))
-        .then((res) => {
-          if (res.meta.requestStatus === "fulfilled") {
-            toast.success("✅ Item removed from cart");
-          } else {
-            toast.error("❌ Failed to remove item");
-          }
-        })
-        .catch(() => {
-          toast.error("❌ Something went wrong");
-        });
+        .unwrap()
+        .then(() => toast.success("✅ Item removed from cart"))
+        .catch(() => toast.error("❌ Failed to remove item"));
     }
   };
 
@@ -59,7 +53,8 @@ const CartPage = () => {
   };
 
   const subtotal = cartItems.reduce((acc, item) => {
-    const price = item?.productId?.price || 0;
+    const product = item?.productId;
+    const price = product?.discount_price || product?.price || 0;
     const quantity = item?.quantity || 0;
     return acc + price * quantity;
   }, 0);
@@ -68,8 +63,19 @@ const CartPage = () => {
   const tax = subtotal * 0.18;
   const total = subtotal + shipping + tax;
 
+  // ✅ Show loader until we know if user is authenticated
+  if (isLoading) {
+    return (
+      <Container className="text-center py-5">
+        <Spinner animation="border" />
+        <p className="mt-2">Checking authentication...</p>
+      </Container>
+    );
+  }
+
   return (
     <Container className="my-5">
+      <Toaster position="top-right" reverseOrder={false} />
       <h3 className="fw-bold mb-4 text-center">🛒 Your Shopping Cart</h3>
       <Row>
         <Col md={8}>
@@ -98,18 +104,26 @@ const CartPage = () => {
                     {cartItems.map((item) => (
                       <tr key={item._id} className="text-center">
                         <td>
-                          <img
-                            src={item.productId?.product_images?.[0]}
-                            alt="product"
-                            width="70"
-                            height="70"
-                            style={{ objectFit: "cover", borderRadius: "10px" }}
-                          />
+                          {item.productId && (
+                            <img
+                              src={item.productId.product_images?.[0]}
+                              alt="product"
+                              width="70"
+                              height="70"
+                              style={{ objectFit: "cover", borderRadius: "10px" }}
+                            />
+                          )}
                         </td>
                         <td>{item.productId?.product_name}</td>
                         <td>{item.quantity}</td>
-                        <td>₹{item.productId?.price}</td>
-                        <td>₹{item.productId?.price * item.quantity}</td>
+                        <td>₹{item.productId?.discount_price || item.productId?.price}</td>
+                        <td>
+                          ₹
+                          {(
+                            (item.productId?.discount_price || item.productId?.price) *
+                            item.quantity
+                          ).toFixed(2)}
+                        </td>
                         <td>
                           <Button
                             variant="outline-danger"
@@ -137,7 +151,6 @@ const CartPage = () => {
                 <span>Subtotal</span>
                 <span>₹{cartItems.length === 0 ? "0.00" : subtotal.toFixed(2)}</span>
               </div>
-
               <div className="d-flex justify-content-between mb-2">
                 <span>
                   Shipping{" "}
@@ -147,18 +160,15 @@ const CartPage = () => {
                 </span>
                 <span>₹{cartItems.length === 0 ? "0.00" : shipping.toFixed(2)}</span>
               </div>
-
               <div className="d-flex justify-content-between mb-2">
                 <span>Tax (18%)</span>
                 <span>₹{cartItems.length === 0 ? "0.00" : tax.toFixed(2)}</span>
               </div>
-
               <hr />
               <div className="d-flex justify-content-between fw-bold fs-5 mb-3">
                 <span>Total</span>
                 <span>₹{cartItems.length === 0 ? "0.00" : total.toFixed(2)}</span>
               </div>
-
               <Button
                 variant="primary"
                 className="w-100"
@@ -171,7 +181,6 @@ const CartPage = () => {
           </Card>
         </Col>
       </Row>
-
     </Container>
   );
 };

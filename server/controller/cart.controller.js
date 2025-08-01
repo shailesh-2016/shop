@@ -1,24 +1,23 @@
 const Cart = require("../model/cart.model");
+const Product = require("../model/product.model");
 
 // ✅ Add to Cart
 exports.addToCart = async (req, res) => {
   const { userId, productId, size, material, quantity } = req.body;
 
   try {
-    // Check if item with same user, product, size, and material exists
-    let cartItem = await Cart.findOne({
-      userId,
-      productId,
-      size,
-      material,
-    });
+    // ✅ Validate product
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    let cartItem = await Cart.findOne({ userId, productId, size, material });
 
     if (cartItem) {
-      // If exists, update quantity
       cartItem.quantity += quantity;
       await cartItem.save();
     } else {
-      // Else, create new
       cartItem = await Cart.create({
         userId,
         productId,
@@ -28,10 +27,13 @@ exports.addToCart = async (req, res) => {
       });
     }
 
+    const populatedCartItem = await Cart.findById(cartItem._id)
+      .populate("productId", "product_name product_images price discount_price");
+
     res.status(201).json({
       success: true,
       message: "Item added to cart successfully",
-      cartItem,
+      cartItem: populatedCartItem,
     });
   } catch (error) {
     res.status(500).json({
@@ -47,7 +49,8 @@ exports.getCartItems = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const cartItems = await Cart.find({ userId }).populate("productId");
+    const cartItems = await Cart.find({ userId })
+      .populate("productId", "product_name product_images price discount_price");
 
     res.json({
       success: true,

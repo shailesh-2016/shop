@@ -13,13 +13,11 @@ import ProductDetails from "./Pages/ProductDetails";
 import CartPage from "./Pages/Cart";
 import Wishlist from "./Pages/WishList";
 import CategoryProducts from "./Pages/CategoryProducts";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 import ScrollToTop from "./components/Scroll";
 import Loader from "./components/Loader";
 import CheckoutPage from "./components/Checkout";
 import OrderSuccessPage from "./components/OrderPage";
+import { Toaster } from "react-hot-toast";
 
 const AppContent = () => {
   const location = useLocation();
@@ -41,7 +39,6 @@ const AppContent = () => {
       {loading && <Loader />}
       {!hideHeaderFooter && <Header />}
 
-      <ToastContainer position="top-right" autoClose={2500} theme="colored" />
 
       <Routes>
         <Route path="/signup" element={<SignupForm />} />
@@ -69,12 +66,15 @@ const AppContent = () => {
   );
 };
 
-const App = () => {
+function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <>
+      <Router>
+        <AppContent />
+      </Router>
+      <Toaster position="top-right" reverseOrder={false} />
+    </>
   );
-};
+}
 
 export default App;

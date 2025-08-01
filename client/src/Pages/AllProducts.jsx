@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react"; // Added useCallback
-import { ShoppingCart, Heart, Filter, X } from "lucide-react"; // Added Filter and X icons
+import React, { useState, useEffect, useCallback } from "react";
+import { ShoppingCart, Heart, Filter, X } from "lucide-react";
 import axios from "axios";
 import "./AllProducts.css";
 import { Link } from "react-router-dom";
@@ -9,7 +9,7 @@ import {
   removeFromWishlist,
   getWishlist,
 } from "../redux/wish-list/listSlice";
-import { toast } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";  // ✅ Changed import
 
 const shuffleArray = (array) => {
   return array
@@ -27,8 +27,8 @@ const ProductPage = () => {
   });
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state for products
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for mobile sidebar
+  const [loading, setLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const dispatch = useDispatch();
   const wishlistItems = useSelector((state) => state.wishlist.items);
@@ -41,7 +41,7 @@ const ProductPage = () => {
         const res = await axios.get(import.meta.env.VITE_BASE_URL_PRODUCTS);
         const shuffled = shuffleArray(res.data.products || []);
         setProducts(shuffled);
-        setFilteredProducts(shuffled); // Initialize filtered products
+        setFilteredProducts(shuffled);
       } catch (err) {
         console.error("❌ Failed to fetch products:", err);
         toast.error("Failed to load products. Please try again later.");
@@ -50,10 +50,10 @@ const ProductPage = () => {
       }
     };
     fetchProducts();
-    dispatch(getWishlist()); // Fetch wishlist on component mount
+    dispatch(getWishlist());
   }, [dispatch]);
 
-  // Apply filters logic (memoized with useCallback)
+  // Apply filters
   const applyFilters = useCallback(() => {
     let currentFiltered = [...products];
 
@@ -82,12 +82,11 @@ const ProductPage = () => {
     }
 
     setFilteredProducts(currentFiltered);
-  }, [products, filters]); // Dependencies for useCallback
+  }, [products, filters]);
 
-  // Re-apply filters whenever filters state changes
   useEffect(() => {
     applyFilters();
-  }, [filters, applyFilters]); // Dependency on applyFilters
+  }, [filters, applyFilters]);
 
   const handleCheckboxChange = (type, value) => {
     setFilters((prev) => {
@@ -112,7 +111,6 @@ const ProductPage = () => {
       maxPrice: "",
       materials: [],
     });
-    // filteredProducts will automatically update via useEffect
     toast.info("All filters cleared!");
   };
 
@@ -137,6 +135,8 @@ const ProductPage = () => {
 
   return (
     <div className="product-page-wrapper container-fluid py-5">
+      <Toaster position="top-right" reverseOrder={false} /> {/* ✅ Hot toast container */}
+      
       <div className="d-flex justify-content-between align-items-center mb-4 px-3 px-md-0">
         <div>
           <h2 className="fw-bold display-5 mb-1">
@@ -152,6 +152,7 @@ const ProductPage = () => {
             / All Products
           </p>
         </div>
+
         {/* Mobile Filter Button */}
         <button
           className="btn btn-outline-primary-custom d-md-none filter-toggle-btn"
@@ -163,10 +164,8 @@ const ProductPage = () => {
       </div>
 
       <div className="row g-4">
-        {/* Sidebar Filters - Conditionally visible on mobile */}
-        <div
-          className={`col-md-3 product-sidebar ${isSidebarOpen ? "open" : ""}`}
-        >
+        {/* Sidebar Filters */}
+        <div className={`col-md-3 product-sidebar ${isSidebarOpen ? "open" : ""}`}>
           <div className="sidebar-header d-flex justify-content-between align-items-center d-md-none p-3 border-bottom">
             <h5 className="mb-0 fw-bold">Filters</h5>
             <button
@@ -185,18 +184,10 @@ const ProductPage = () => {
               </button>
             </div>
 
+            {/* Categories */}
             <div className="filter-group mb-4 pb-3 border-bottom">
-              <h6 className="fw-bold mb-3 text-primary-custom-dark">
-                Categories
-              </h6>
-              {[
-                "Rings",
-                "Earrings",
-                "Necklaces",
-                "Bracelets",
-                "Bangles",
-                "Pendants",
-              ].map((cat) => (
+              <h6 className="fw-bold mb-3 text-primary-custom-dark">Categories</h6>
+              {["Rings", "Earrings", "Necklaces", "Bracelets", "Bangles", "Pendants"].map((cat) => (
                 <div className="form-check custom-checkbox mb-2" key={cat}>
                   <input
                     className="form-check-input"
@@ -212,10 +203,9 @@ const ProductPage = () => {
               ))}
             </div>
 
+            {/* Price */}
             <div className="filter-group mb-4 pb-3 border-bottom">
-              <h6 className="fw-bold mb-3 text-primary-custom-dark">
-                Price Range
-              </h6>
+              <h6 className="fw-bold mb-3 text-primary-custom-dark">Price Range</h6>
               <div className="d-flex gap-2 mb-2">
                 <input
                   type="number"
@@ -234,51 +224,40 @@ const ProductPage = () => {
               </div>
             </div>
 
+            {/* Material */}
             <div className="filter-group mb-0">
-              <h6 className="fw-bold mb-3 text-primary-custom-dark">
-                Material
-              </h6>
-              {["18K Gold", "22K Gold", "Rose Gold", "White Gold"].map(
-                (mat) => (
-                  <div className="form-check custom-checkbox mb-2" key={mat}>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id={`mat-${mat}`}
-                      checked={filters.materials.includes(mat)}
-                      onChange={() => handleCheckboxChange("materials", mat)}
-                    />
-                    <label className="form-check-label" htmlFor={`mat-${mat}`}>
-                      {mat}
-                    </label>
-                  </div>
-                )
-              )}
+              <h6 className="fw-bold mb-3 text-primary-custom-dark">Material</h6>
+              {["18K Gold", "22K Gold", "Rose Gold", "White Gold"].map((mat) => (
+                <div className="form-check custom-checkbox mb-2" key={mat}>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id={`mat-${mat}`}
+                    checked={filters.materials.includes(mat)}
+                    onChange={() => handleCheckboxChange("materials", mat)}
+                  />
+                  <label className="form-check-label" htmlFor={`mat-${mat}`}>
+                    {mat}
+                  </label>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Product Cards */}
+        {/* Product Grid */}
         <div className="col-md-9 product-grid-container">
           {loading ? (
             <div className="text-center py-5">
               <div className="spinner-border text-primary-custom" role="status">
                 <span className="visually-hidden">Loading products...</span>
               </div>
-              <p className="mt-3 text-muted">
-                Fetching our beautiful jewelry collection...
-              </p>
+              <p className="mt-3 text-muted">Fetching our beautiful jewelry collection...</p>
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div
-              className="alert alert-info text-center py-4 my-5"
-              role="alert"
-            >
+            <div className="alert alert-info text-center py-4 my-5" role="alert">
               <h5 className="alert-heading">No Products Found!</h5>
-              <p className="mb-0">
-                Looks like your current filters don't match any products. Try
-                adjusting them.
-              </p>
+              <p className="mb-0">Looks like your current filters don't match any products. Try adjusting them.</p>
               <button
                 className="btn btn-link text-primary-custom mt-2"
                 onClick={clearAllFilters}
@@ -288,17 +267,10 @@ const ProductPage = () => {
             </div>
           ) : (
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-              {" "}
-              {/* Adjusted grid columns */}
               {filteredProducts.map((product) => (
                 <div className="col d-flex" key={product._id}>
-                  {" "}
-                  {/* Use product._id for key */}
                   <div className="card product-card h-100 border-0 rounded-3 shadow-sm overflow-hidden">
-                    <Link
-                      to={`/details/${product._id}`}
-                      className="product-image-link"
-                    >
+                    <Link to={`/details/${product._id}`} className="product-image-link">
                       <div className="product-image-wrapper">
                         <img
                           src={product.product_images?.[0]}
@@ -310,9 +282,7 @@ const ProductPage = () => {
 
                     {/* ❤️ Wishlist Button */}
                     <button
-                      className={`wishlist-btn ${
-                        isInWishlist(product._id) ? "active" : ""
-                      }`}
+                      className={`wishlist-btn ${isInWishlist(product._id) ? "active" : ""}`}
                       onClick={() => toggleWishlist(product)}
                       aria-label={
                         isInWishlist(product._id)
@@ -321,17 +291,14 @@ const ProductPage = () => {
                       }
                     >
                       <Heart
-                        size={20} // Slightly larger icon
-                        color={isInWishlist(product._id) ? "#e63946" : "#777"} // Darker gray when not active
+                        size={20}
+                        color={isInWishlist(product._id) ? "#e63946" : "#777"}
                         fill={isInWishlist(product._id) ? "#e63946" : "none"}
                       />
                     </button>
 
                     <div className="card-body text-center d-flex flex-column justify-content-between">
-                      <Link
-                        to={`/details/${product._id}`}
-                        className="product-title-link"
-                      >
+                      <Link to={`/details/${product._id}`} className="product-title-link">
                         <h6 className="card-title fw-semibold text-dark mb-2">
                           {product.product_name}
                         </h6>
@@ -342,7 +309,7 @@ const ProductPage = () => {
 
                       <Link
                         to={`/details/${product._id}`}
-                        className="btn btn-primary-custom w-100 d-flex align-items-center justify-content-center gap-2 view-details-btn mt-auto" // mt-auto to push button to bottom
+                        className="btn btn-primary-custom w-100 d-flex align-items-center justify-content-center gap-2 view-details-btn mt-auto"
                       >
                         <ShoppingCart size={18} /> View Details
                       </Link>

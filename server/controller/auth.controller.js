@@ -1,155 +1,114 @@
-const { User } = require("../model/auth");
+const User = require("../model/auth");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const isProduction = process.env.NODE_ENV === "production";
+
+// ✅ Generate JWT
+const generateToken = (user) => {
+  return jwt.sign(
+    {
+      id: user._id,
+      role: user.role,
+      email: user.email,
+      username: user.username,
+      name: user.name,
+    },
+    process.env.SECRET,
+    { expiresIn: "7d" }
+  );
+};
+
+// ✅ Cookie Options
+const cookieOptions = {
+  httpOnly: true,
+  secure: true,          // Always true since backend is HTTPS
+  sameSite: "None",      // Required for cross-domain cookie
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  path: "/",
+};
+
+
+// ✅ Register
 exports.register = async (req, res) => {
   const { name, username, email, password } = req.body;
 
   try {
-    const checkUser = await User.findOne({ email });
-    if (checkUser)
-      return res.json({
-        success: false,
-        message: "User Already exists with the same email! Please try again",
-      });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: "User already exists!" });
+    }
 
     const hashPassword = await bcrypt.hash(password, 12);
-    const newUser = await User.create({
-      name,
-      username,
-      email,
-      password: hashPassword,
-    });
+    await User.create({ name, username, email, password: hashPassword });
 
-    if (newUser) {
-      return res.status(200).json({
-        success: true,
-        message: "Registration successful",
-      });
-    }
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({
-      success: false,
-      message: "Some error occurred",
-    });
+    res.status(201).json({ success: true, message: "Registration successful" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
+// ✅ Login
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const checkUser = await User.findOne({ email });
-    if (!checkUser)
-      return res.status(401).json({
-        success: false,
-        message: "User doesn't exist! Please register first",
-      });
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).json({ success: false, message: "User not found" });
 
-    const checkPasswordMatch = await bcrypt.compare(
-      password,
-      checkUser.password
-    );
-    if (!checkPasswordMatch)
-      return res.status(401).json({
-        success: false,
-        message: "Incorrect password! Please try again",
-      });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ success: false, message: "Incorrect password" });
 
-    const token = jwt.sign(
-      {
-        id: checkUser._id,
-        role: checkUser.role,
-        email: checkUser.email,
-        userName: checkUser.username,
-      },
-      process.env.SECRET,
-      { expiresIn: "60m" }
-    );
+    const token = generateToken(user);
 
-    res
-      .cookie("token", token, { httpOnly: true, secure: false })
-      .status(200)
-      .json({
-        success: true,
-        message: "Logged in successfully",
-        user: {
-          email: checkUser.email,
-          role: checkUser.role,
-          id: checkUser._id,
-          userName: checkUser.username,
-        },
-      });
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({
-      success: false,
-      message: "Some error occurred",
+    // ✅ Set cookie
+    res.cookie("token", token, cookieOptions);
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      user: { id: user._id, email: user.email, username: user.username, role: user.role },
     });
+  } catch (error) {
+    console.error("Login Error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
-
+// ✅ Logout
 exports.logoutUser = (req, res) => {
-  res.clearCookie("token").json({
+  res.clearCookie("token", { ...cookieOptions, maxAge: 0 }).json({
     success: true,
-    message: "Logged out successfully!",
+    message: "Logged out successfully!"
   });
 };
 
-
-
-exports.authMiddleware = async (req, res, next) => {
+// ✅ Middleware
+exports.authMiddleware = (req, res, next) => {
   const token = req.cookies.token;
-  if (!token)
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorised user!",
-    });
+  if (!token) return res.status(401).json({ success: false, message: "Unauthorized" });
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET);
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({
-      success: false,
-      message: "Unauthorised user!",
-    });
+    res.status(401).json({ success: false, message: "Invalid token" });
   }
 };
 
-
-
+// ✅ Google Login
 exports.googleLogin = async (req, res) => {
   try {
     const { name, email, avatar } = req.body;
-
     let user = await User.findOne({ email });
 
     if (!user) {
-      user = new User({ name, email, avatar, password: "" });
-      await user.save();
+      user = await User.create({ name, email, avatar, password: "" });
     }
 
-    const token = jwt.sign(
-      {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-        role: user.role,
-      },
-      process.env.SECRET,
-      { expiresIn: "7d" }
-    );
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    });
+    const token = generateToken(user);
+    res.cookie("token", token, cookieOptions);
 
     const userData = user.toObject();
     delete userData.password;
@@ -157,10 +116,9 @@ exports.googleLogin = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Google login successful",
-      user: userData,
+      user: userData
     });
   } catch (error) {
-    console.error("Google Login Error:", error);
     res.status(500).json({ success: false, message: "Google login failed" });
   }
 };

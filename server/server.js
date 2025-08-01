@@ -1,8 +1,8 @@
 require("dotenv").config();
 const express = require("express");
-const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+
 const authRoute = require("./routes/auth.route");
 const categoryRoute = require("./routes/category.route");
 const products = require("./routes/product.route");
@@ -12,14 +12,13 @@ const bannerRoute = require("./routes/banner.route");
 const paymentRoute = require("./routes/payment.route");
 const orderRoute = require("./routes/order.route");
 
-
-
-
 const db = require("./config/db");
 db();
+
+const app = express();
 const PORT = process.env.PORT || 3000;
 
-///use
+app.set("trust proxy", 1); // ✅ Needed for secure cookies on Render
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -30,21 +29,19 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true, // required when sending cookies/auth headers
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
+// ✅ Middlewares
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ✅ Routes
 app.use("/api/auth", authRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/products", products);
@@ -54,9 +51,6 @@ app.use("/api/banner", bannerRoute);
 app.use("/api/payment", paymentRoute);
 app.use("/api/order", orderRoute);
 
-
-
-
-
 app.get("/", (req, res) => res.send("Hello World!"));
-app.listen(PORT, () => console.log(`Example app listening on PORT ${PORT}!`));
+
+app.listen(PORT, () => console.log(`🚀 Server running on PORT ${PORT}!`));
