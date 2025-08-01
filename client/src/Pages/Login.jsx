@@ -22,6 +22,7 @@ export default function LoginPage() {
   }, [isAuthenticated, isLoading, navigate]);
 
   const onSubmit = (data) => {
+    
     dispatch(loginUser(data))
       .unwrap()
       .then((res) => {

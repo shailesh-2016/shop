@@ -22,11 +22,13 @@ const generateToken = (user) => {
 // ✅ Cookie Options
 const cookieOptions = {
   httpOnly: true,
-  secure: true,          // Always true since backend is HTTPS
-  sameSite: "None",      // Required for cross-domain cookie
+  secure: process.env.NODE_ENV === "production", // ✅ false for localhost
+  sameSite: "None", // ✅ required for cross-domain
   maxAge: 7 * 24 * 60 * 60 * 1000,
   path: "/",
 };
+
+
 
 
 // ✅ Register
