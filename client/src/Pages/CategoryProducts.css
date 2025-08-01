@@ -1,67 +1,287 @@
-.product-card {
-  transition: transform 0.3s ease;
-  position: relative;
+/* --- Global Theme Variables --- */
+/* Yeh variables aapke poore application mein common ho sakte hain */
+:root {
+  --primary-theme-color: #9D4BE0; /* A vibrant purple */
+  --secondary-button-color: #7C3BCE; /* Darker purple for hover */
+  --text-muted-color: #6c757d;
+  --dark-text-color: #333;
+  --light-bg-color: #f8f9fa;
+  --white-color: #fff;
+  --discount-price-color: #dc3545; /* Red for discount */
+  --new-badge-color: #ffc107; /* Bright yellow for 'New' badge */
 }
 
+/* --- Section Header Styling (Can be common for all sections) --- */
+.section-header {
+  margin-bottom: 60px !important; /* Space below header */
+  text-align: center; /* Default center align for header text */
+}
+
+.section-header h2 {
+  font-size: 2.5rem; /* Larger heading */
+  color: var(--dark-text-color);
+}
+
+.section-header h2 .text-primary-custom,
+.text-primary-custom { /* Added .text-primary-custom here */
+  color: var(--primary-theme-color) !important; /* Your primary color */
+}
+
+.section-header p {
+  font-size: 1.1rem;
+  color: var(--text-muted-color);
+  max-width: 600px;
+  margin: 0 auto; /* Center align description */
+}
+
+/* View All Products Button (common style for outline buttons) */
+.btn-outline-primary-custom {
+  background-color: transparent !important;
+  border: 2px solid var(--primary-theme-color) !important;
+  color: var(--primary-theme-color) !important;
+  font-weight: 600;
+  padding: 10px 25px;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary-custom:hover {
+  background-color: var(--primary-theme-color) !important;
+  color: var(--white-color) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Product Card Styling (General Card for both New Arrivals and Category Products) --- */
+.card-hover-group, /* Use this for CategoryProducts */
+.product-card { /* Use this for New Arrivals */
+  border: none !important; /* Remove default card border */
+  border-radius: 15px !important; /* More rounded corners */
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%; /* For equal height cards in a row */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Initial subtle shadow */
+}
+
+.card-hover-group:hover,
 .product-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-10px); /* Significant lift on hover */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
 }
 
+.product-img-wrapper {
+  overflow: hidden;
+  border-radius: 15px 15px 0 0; /* Rounded top corners */
+}
+
+.product-img { /* Use this for img inside product card */
+  width: 100%;
+  height: 250px; /* Fixed height for consistency */
+  object-fit: cover;
+  transition: transform 0.4s ease; /* Smooth zoom transition */
+}
+
+.card-hover-group:hover .product-img,
+.product-card:hover .product-img {
+  transform: scale(1.1); /* Zoom effect on image hover */
+}
+
+/* New Arrival Badge (Optional - if needed for category products too) */
+.new-arrival-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: var(--new-badge-color) !important;
+  color: var(--dark-text-color) !important;
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+/* --- Product Actions (Heart & Cart Icons on Hover) --- */
+/* Yeh style wishlist aur cart buttons ke liye hai jo image par dikhte hain */
 .product-actions {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 10px;
+  top: 15px;
+  right: 15px;
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* Stack icons vertically */
+  gap: 10px;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transform: translateX(10px); /* Start slightly to the right */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1;
 }
 
+.card-hover-group:hover .product-actions,
 .product-card:hover .product-actions {
   opacity: 1;
+  transform: translateX(0);
 }
 
-
-.card-hover-group .hover-cart-btn {
-  display: none;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  border-radius: 0;
-}
-
-.card-hover-group:hover .hover-cart-btn {
-  display: flex;
-}
-
-.wishlist-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: white;
+.icon-btn, /* General icon button style */
+.wishlist-btn { /* Specific wishlist button, can inherit from icon-btn or stand alone */
+  background-color: rgba(157, 75, 224, 0.8) !important; /* Primary color with transparency */
+  color: var(--white-color) !important;
   border: none;
   border-radius: 50%;
-  padding: 5px;
-  z-index: 10;
-  font-size: 18px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
 }
 
-.wishlist-btn.active svg {
-  fill: #e63946;
-  color: #e63946;
-}
-.card-body h6,
-.card-body p {
-  margin-bottom: 4px !important;
+.icon-btn:hover,
+.wishlist-btn:hover {
+  background-color: var(--primary-theme-color) !important;
+  transform: scale(1.1);
 }
 
-.hover-cart-btn {
-  margin-top: 6px !important;
+.wishlist-btn.active {
+  color: var(--discount-price-color) !important; /* Red heart when active */
+  background-color: var(--white-color) !important; /* White background for active heart */
+}
+.wishlist-btn.active:hover {
+  background-color: var(--white-color) !important; /* Active heart ka background hover pe bhi white */
+  transform: scale(1.15); /* Thoda zyada scale */
 }
 
 
+/* --- Product Card Body & Text --- */
+.product-card .card-body,
+.card-hover-group .card-body {
+  padding: 20px;
+  text-align: center;
+  display: flex; /* Flex container for content */
+  flex-direction: column; /* Stack items vertically */
+  justify-content: space-between; /* To push view details button to bottom */
+}
 
+.product-title-link {
+  text-decoration: none; /* Remove underline */
+  display: block; /* Make it a block element to control margins */
+  margin-bottom: 10px; /* Space between title and price/material */
+}
+
+.product-title-link h6 {
+  font-size: 1.15rem;
+  color: var(--dark-text-color);
+  transition: color 0.2s ease;
+}
+
+.product-title-link:hover h6 {
+  color: var(--primary-theme-color); /* Primary color on title hover */
+}
+
+.product-material { /* New class for material text */
+    font-size: 0.95rem;
+    color: var(--text-muted-color);
+    margin-bottom: 5px; /* Adjust spacing */
+}
+
+.product-price {
+  font-size: 1.3rem;
+  color: var(--primary-theme-color) !important; /* Primary color for price */
+  font-weight: 700 !important;
+  margin-bottom: 20px !important; /* More space before button */
+  flex-grow: 1; /* Allows price to take available space, pushing button down */
+  display: flex; /* For alignment of discounted price */
+  justify-content: center;
+  align-items: baseline; /* Align prices nicely */
+}
+
+.product-price .text-decoration-line-through {
+  color: var(--text-muted-color) !important;
+  font-size: 0.85rem;
+  margin-left: 8px; /* Space between current and old price */
+}
+
+
+/* --- View Details Button (Common style for solid primary buttons) --- */
+.view-details-btn,
+.btn-primary-custom { /* General button style */
+  background-color: var(--primary-theme-color) !important;
+  border-color: var(--primary-theme-color) !important;
+  color: var(--white-color) !important;
+  font-weight: 600;
+  padding: 12px 0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  width: 100%; /* Ensure it takes full width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Space between icon and text */
+  margin-top: auto; /* Push button to bottom if card-body is flex-column */
+}
+
+.view-details-btn:hover,
+.btn-primary-custom:hover {
+  background-color: var(--secondary-button-color) !important;
+  border-color: var(--secondary-button-color) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Loading State Styling --- */
+.spinner-border.text-primary-custom {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-width: 0.4em;
+  color: var(--primary-theme-color) !important;
+}
+
+/* --- No Products Found Message --- */
+.no-products-message {
+    font-size: 1.1rem;
+    color: var(--text-muted-color);
+    margin-top: 20px;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 991.98px) {
+  .section-header h2 { font-size: 2.2rem; }
+  .section-header p { font-size: 1rem; }
+  .btn-outline-primary-custom { padding: 8px 20px; font-size: 0.9rem; }
+  .product-img { height: 220px; }
+  .card-body { padding: 15px; }
+  .product-title-link h6 { font-size: 1.05rem; }
+  .product-price { font-size: 1.2rem; }
+  .view-details-btn { font-size: 0.9rem; padding: 10px 0; }
+}
+
+@media (max-width: 767.98px) {
+  .new-arrivals-section, .container.py-5 { padding: 40px 0; } /* Adjust padding for mobile */
+  .section-header { margin-bottom: 40px !important; }
+  .section-header h2 { font-size: 2rem; }
+  .section-header p { text-align: center; }
+  .btn-outline-primary-custom {
+    width: 100%;
+    max-width: 250px;
+    margin: 20px auto 0 auto !important;
+    display: block;
+  }
+  .product-img { height: 180px; }
+  .card-hover-group, .product-card { border-radius: 10px !important; }
+  .product-img-wrapper { border-radius: 10px 10px 0 0; }
+  .product-actions { top: 10px; right: 10px; gap: 8px; }
+  .icon-btn, .wishlist-btn { width: 35px; height: 35px; }
+  .new-arrival-badge { top: 10px; left: 10px; padding: 3px 8px; font-size: 0.7rem; }
+  .col-12.text-center { margin-bottom: 20px; } /* Adjust spinner spacing */
+}
+
+@media (max-width: 575.98px) {
+  .section-header h2 { font-size: 1.8rem; }
+  .section-header p { font-size: 0.9rem; }
+  .product-img { height: 160px; }
+  .product-title-link h6 { font-size: 1rem; }
+  .product-price { font-size: 1.1rem; }
+}

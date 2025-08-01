@@ -26,80 +26,81 @@ const res = await axios.get(import.meta.env.VITE_BASE_URL_BANNER);
     fetchBanners();
   }, []);
 
-  return (
-    <>
-      {/* 🌟 Hero Slider (Dynamic) */}
-      {loading ? (
-        <div className="banner-loading-placeholder d-flex justify-content-center align-items-center bg-light-subtle" style={{ height: "570px" }}>
-          <div className="spinner-border text-primary-custom" role="status">
-            <span className="visually-hidden">Loading banners...</span>
+ return (
+  <>
+    {/* 🌟 Hero Slider (Dynamic) */}
+    {loading ? (
+      <div
+        className="banner-loading-placeholder d-flex flex-column justify-content-center align-items-center bg-light-subtle"
+        style={{ height: "570px" }}
+      >
+        <div className="spinner-border text-primary-custom mb-3" role="status">
+          <span className="visually-hidden">Loading banners...</span>
+        </div>
+        <p className="text-muted fs-5">Loading stunning visuals...</p>
+      </div>
+    ) : banners.length === 0 ? (
+      <div
+        className="banner-error-message text-center py-5 bg-light-subtle"
+        style={{ height: "570px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}
+      >
+        <h4 className="text-muted mb-3">No banners found</h4>
+        <p className="text-secondary">Please add banners to display them here.</p>
+      </div>
+    ) : (
+      <Carousel
+        autoPlay
+        infiniteLoop
+        showThumbs={false}
+        showStatus={false}
+        interval={4000}
+        transitionTime={800}
+        swipeable
+        emulateTouch
+        className="main-hero-carousel"
+        renderIndicator={(onClickHandler, isSelected, index, label) => {
+          return (
+            <li
+              className={`custom-indicator ${isSelected ? "selected" : ""}`}
+              onClick={onClickHandler}
+              onKeyDown={onClickHandler}
+              value={index}
+              key={index}
+              role="button"
+              tabIndex={0}
+              title={`${label} ${index + 1}`}
+              aria-label={`${label} ${index + 1}`}
+            />
+          );
+        }}
+      >
+        {banners.map((banner, idx) => (
+          <div key={idx} className="banner-slide position-relative">
+            <img
+              src={banner.image}
+              alt={banner.title || `Banner image ${idx + 1}`}
+              className="banner-image w-100"
+              style={{
+                height: "570px",
+                objectFit: "cover",
+              }}
+            />
+            {banner.title && (
+              <div className="custom-legend text-light d-flex flex-column align-items-start justify-content-center px-4">
+                <h2 className="fw-bold">{banner.title}</h2>
+                {banner.description && <p className="mb-3">{banner.description}</p>}
+                <button className="btn btn-light-custom mt-2">Shop Now</button>
+              </div>
+            )}
           </div>
-          <p className="ms-3 text-muted">Loading stunning visuals...</p>
-        </div>
-      ) : banners.length === 0 ? (
-        <div className="banner-error-message text-center py-5 bg-light-subtle" style={{ height: "570px", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-          <h4 className="text-muted mb-3">No banners found</h4>
-          <p className="text-secondary">Please add banners to display them here.</p>
-        </div>
-      ) : (
-        <Carousel
-          autoPlay
-          infiniteLoop
-          showThumbs={false}
-          showStatus={false}
-          interval={3500} // Slightly increased interval for more comfortable viewing
-          transitionTime={1000} // Smoother transition
-          swipeable
-          emulateTouch
-          className="main-hero-carousel" // Custom class for styling
-          renderIndicator={(onClickHandler, isSelected, index, label) => {
-            if (isSelected) {
-              return (
-                <li
-                  className="custom-indicator selected"
-                  aria-label={`Selected: ${label} ${index + 1}`}
-                  title={`Selected: ${label} ${index + 1}`}
-                />
-              );
-            }
-            return (
-              <li
-                className="custom-indicator"
-                onClick={onClickHandler}
-                onKeyDown={onClickHandler}
-                value={index}
-                key={index}
-                role="button"
-                tabIndex={0}
-                title={`${label} ${index + 1}`}
-                aria-label={`${label} ${index + 1}`}
-              />
-            );
-          }}
-        >
-          {banners.map((banner, idx) => (
-            <div key={idx} className="banner-slide">
-              <img
-                src={banner.image}
-                alt={banner.title || `Banner image ${idx + 1}`}
-                className="banner-image"
-                style={{ height: "570px", objectFit: "cover", width: "100%" }}
-              />
-              {banner.title && (
-                <div className="legend custom-legend"> {/* Add custom-legend class */}
-                  <h3>{banner.title}</h3>
-                  {banner.description && <p>{banner.description}</p>} {/* Assuming you might have a description field */}
-                  <button className="btn btn-light-custom mt-3">Shop Now</button> {/* Custom styled button */}
-                </div>
-              )}
-            </div>
-          ))}
-        </Carousel>
-      )}
+        ))}
+      </Carousel>
+    )}
 
-      <Category /> {/* Category component will appear below the carousel */}
-    </>
-  );
+    <Category />
+  </>
+);
+
 };
 
 export default Home;

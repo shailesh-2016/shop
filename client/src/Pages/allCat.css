@@ -1,0 +1,29 @@
+.category-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.category-card:hover .category-image {
+  transform: scale(1.05);
+}
+
+.category-overlay {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  transition: background 0.3s ease;
+}
+
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 576px) {
+  .category-overlay h5 {
+    font-size: 16px;
+  }
+  .category-overlay p {
+    font-size: 12px;
+  }
+}
