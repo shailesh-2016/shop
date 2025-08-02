@@ -2,9 +2,6 @@ const User = require("../model/auth");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const isProduction = process.env.NODE_ENV === "production";
-
-// ✅ Generate JWT
 const generateToken = (user) => {
   return jwt.sign(
     {
@@ -18,18 +15,6 @@ const generateToken = (user) => {
     { expiresIn: "7d" }
   );
 };
-
-// ✅ Cookie Options
-const cookieOptions = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production", // ✅ false for localhost
-  sameSite: "None", // ✅ required for cross-domain
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-  path: "/",
-};
-
-
-
 
 // ✅ Register
 exports.register = async (req, res) => {
@@ -63,31 +48,26 @@ exports.login = async (req, res) => {
 
     const token = generateToken(user);
 
-    // ✅ Set cookie
-    res.cookie("token", token, cookieOptions);
-
     return res.status(200).json({
       success: true,
       message: "Login successful",
+      token,
       user: { id: user._id, email: user.email, username: user.username, role: user.role },
     });
   } catch (error) {
-    console.error("Login Error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
 // ✅ Logout
 exports.logoutUser = (req, res) => {
-  res.clearCookie("token", { ...cookieOptions, maxAge: 0 }).json({
-    success: true,
-    message: "Logged out successfully!"
-  });
+  return res.status(200).json({ success: true, message: "Logged out successfully!" });
 };
 
 // ✅ Middleware
 exports.authMiddleware = (req, res, next) => {
-  const token = req.cookies.token;
+  const token = req.headers.authorization?.split(" ")[1];
+
   if (!token) return res.status(401).json({ success: false, message: "Unauthorized" });
 
   try {
@@ -110,14 +90,13 @@ exports.googleLogin = async (req, res) => {
     }
 
     const token = generateToken(user);
-    res.cookie("token", token, cookieOptions);
-
     const userData = user.toObject();
     delete userData.password;
 
     res.status(200).json({
       success: true,
       message: "Google login successful",
+      token,
       user: userData
     });
   } catch (error) {

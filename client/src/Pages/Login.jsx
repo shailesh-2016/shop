@@ -23,17 +23,18 @@ export default function LoginPage() {
 
   const onSubmit = (data) => {
     
-    dispatch(loginUser(data))
-      .unwrap()
-      .then((res) => {
-        if (res?.success) {
-          toast.success("✅ Login successful");
-          navigate("/home");
-        } else {
-          toast.error(res?.message || "❌ Invalid credentials");
-        }
-      })
-      .catch((err) => toast.error(err?.message || "❌ Login failed"));
+   dispatch(loginUser(data))
+  .unwrap()
+  .then((res) => {
+    if (res?.success) {
+      toast.success("✅ Login successful");
+      navigate("/home");
+    } else {
+      toast.error(res?.message || "❌ Invalid credentials");
+    }
+  })
+  .catch((err) => toast.error(err?.message || "❌ Login failed"));
+
   };
 
   const handleGoogleLogin = async () => {
