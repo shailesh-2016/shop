@@ -11,7 +11,7 @@ import {
   CAlert,
 } from '@coreui/react'
 import { useDispatch } from 'react-redux'
-import { addCat } from '../userSlice'
+import { addCat } from '../categorySlice'
 import Swal from 'sweetalert2'
 
 const Category = () => {

@@ -14,7 +14,7 @@ import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { editPro, viewPro } from '../productSlice'
-import { viewCat } from '../userSlice'
+import { viewCat } from '../categorySlice'
 import Swal from 'sweetalert2'
 
 const sizeOptions = ['XS', 'S', 'M', 'L', 'XL']
@@ -25,7 +25,7 @@ const Edit = () => {
   const { id } = useParams()
 
   const { productList } = useSelector((state) => state.product)
-  const { userList } = useSelector((state) => state.users)
+  const { categoryList } = useSelector((state) => state.category)
 
   const {
     register,
@@ -119,7 +119,7 @@ const Edit = () => {
               <CFormLabel>Category</CFormLabel>
               <CFormSelect {...register('category', { required: 'Category is required' })}>
                 <option value="">-- Select Category --</option>
-                {userList.map((cat) => (
+                {categoryList.map((cat) => (
                   <option key={cat._id} value={cat._id}>
                     {cat.cat_name}
                   </option>

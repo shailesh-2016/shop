@@ -13,7 +13,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { viewCat } from '../userSlice'
+import { viewCat } from '../categorySlice'
 import { useNavigate } from 'react-router-dom'
 import { addPro } from '../productSlice'
 import Swal from 'sweetalert2'
@@ -23,7 +23,7 @@ const sizeOptions = ['XS', 'S', 'M', 'L', 'XL']
 const Create = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { userList } = useSelector((state) => state.users)
+  const { categoryList } = useSelector((state) => state.category)
 
   const [sizeStock, setSizeStock] = useState(
     sizeOptions.map((sz) => ({ size: sz, stock: 0 }))
@@ -96,7 +96,7 @@ const Create = () => {
               <CFormLabel>Category</CFormLabel>
               <CFormSelect {...register('category', { required: 'Category is required' })}>
                 <option value="">-- Select Category --</option>
-                {userList.map((cat) => (
+                {categoryList.map((cat) => (
                   <option key={cat._id} value={cat._id}>
                     {cat.cat_name}
                   </option>

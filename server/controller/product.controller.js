@@ -3,38 +3,50 @@ const Product = require("../model/product.model");
 // ✅ CREATE PRODUCT with multiple image upload (from Cloudinary)
 // controllers/product.controller.js
 
-exports.createProduct = async (req, res) => {
+exports.createOrder = async (req, res) => {
   try {
-    const {
-      product_name,
-      product_description,
-      price,
-      discount_price,
-      category,
-      sizeStock,
-    } = req.body;
+    const { cartItems, totalAmount, shippingInfo } = req.body;
+    const userId = req.user._id;
 
-    const product_images = req.files?.map((file) => file.path);
+    // 1. Reduce product quantity
+    for (let item of cartItems) {
+      const product = await Product.findById(item.productId);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
 
-    if (!product_images || product_images.length === 0) {
-      return res.status(400).json({ success: false, message: "No images uploaded" });
+      if (product.quantity < item.quantity) {
+        return res.status(400).json({ message: `Insufficient stock for ${product.product_name}` });
+      }
+
+      product.quantity -= item.quantity;
+      await product.save();
     }
 
-    const product = new Product({
-      product_name,
-      product_description,
-      price,
-      discount_price,
-      category,
-      product_images,
-      sizeStock: JSON.parse(sizeStock), 
+    // 2. Create new order
+    const newOrder = new Order({
+      userId,
+      items: cartItems,
+      totalAmount,
+      shippingInfo,
     });
 
-    await product.save();
-    res.status(201).json({ success: true, message: "✅ Product created successfully", product });
-  } catch (error) {
-    console.error("Create product error:", error);
-    res.status(500).json({ success: false, message: "❌ Failed to create product" });
+    await newOrder.save();
+
+    // 3. Remove purchased items from user's cart
+    await Cart.deleteMany({ userId });
+
+    return res.status(201).json({
+      success: true,
+      message: "Order placed successfully",
+      order: newOrder,
+    });
+  } catch (err) {
+    console.error("Create Order Error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
   }
 };
 
@@ -219,34 +231,6 @@ exports.getProductsByCategoryId = async (req, res) => {
 
 
 
-exports.reduceStockAfterOrder = async (req, res) => {
-  try {
-    const { productId, selectedSize, quantity } = req.body;
 
-    const product = await Product.findById(productId);
-    if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
-    }
-    const sizeIndex = product.sizeStock.findIndex((s) => s.size === selectedSize);
-    if (sizeIndex === -1) {
-      return res.status(400).json({ success: false, message: "Invalid size selected" });
-    }
-    if (product.sizeStock[sizeIndex].stock < quantity) {
-      return res.status(400).json({ success: false, message: "Insufficient stock" });
-    }
-    // Never allow negative/zero cases!
-    product.sizeStock[sizeIndex].stock -= quantity;
-    await product.save();
-
-    res.status(200).json({
-      success: true,
-      message: `Stock updated for size ${selectedSize}`,
-      updatedStock: product.sizeStock[sizeIndex],
-    });
-  } catch (error) {
-    console.error("Reduce stock error:", error);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-};
 
 

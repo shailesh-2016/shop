@@ -3,7 +3,8 @@ import axios from 'axios'
 
 const API_URL = import.meta.env.VITE_BASE_URL
 
-export const addCat = createAsyncThunk('user/addCat', async (formData) => {
+// Add Category
+export const addCat = createAsyncThunk('category/addCat', async (formData) => {
   const res = await axios.post(API_URL, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -12,59 +13,57 @@ export const addCat = createAsyncThunk('user/addCat', async (formData) => {
   return res.data
 })
 
-
-export const viewCat = createAsyncThunk('users/viewCat', async () => {
+// View Categories
+export const viewCat = createAsyncThunk('category/viewCat', async () => {
   const res = await axios.get(API_URL)
   console.log(res)
   return res.data
 })
 
-export const delCat = createAsyncThunk('users/delCat', async (id) => {
+// Delete Category
+export const delCat = createAsyncThunk('category/delCat', async (id) => {
   await axios.delete(`${API_URL}/${id}`)
   return id
 })
 
-// ✅ 
-export const updateCat = createAsyncThunk('users/updateCat', async ({ id, formData }) => {
+// Update Category
+export const updateCat = createAsyncThunk('category/updateCat', async ({ id, formData }) => {
   const res = await axios.put(`${API_URL}/${id}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
-  });
-  return res.data;
-});
-
-
-
+  })
+  return res.data
+})
 
 const initialState = {
-  userList: [],
+  categoryList: [],
 }
 
-const userSlice = createSlice({
-  name: 'users',
+const categorySlice = createSlice({
+  name: 'category',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(addCat.fulfilled, (state, action) => {
-        state.userList.push(action.payload)
+        state.categoryList.push(action.payload)
       })
       .addCase(viewCat.fulfilled, (state, action) => {
-        state.userList = action.payload
+        state.categoryList = action.payload
       })
       .addCase(delCat.fulfilled, (state, action) => {
         const id = action.payload
-        state.userList = state.userList.filter((user) => user._id !== id)
+        state.categoryList = state.categoryList.filter((cat) => cat._id !== id)
       })
       .addCase(updateCat.fulfilled, (state, action) => {
         const updated = action.payload
-        const index = state.userList.findIndex((user) => user._id === updated._id)
+        const index = state.categoryList.findIndex((cat) => cat._id === updated._id)
         if (index !== -1) {
-          state.userList[index] = updated
+          state.categoryList[index] = updated
         }
       })
   },
 })
 
-export default userSlice.reducer
+export default categorySlice.reducer

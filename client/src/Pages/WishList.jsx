@@ -15,6 +15,8 @@ const Wishlist = () => {
   const dispatch = useDispatch();
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const loading = useSelector((state) => state.wishlist.loading);
+  const user = useSelector((state) => state.auth.user);
+
 
   useEffect(() => {
     dispatch(getWishlist());
@@ -29,15 +31,31 @@ const Wishlist = () => {
     }
   };
 
-  const handleAddToCart = async (item) => {
-    try {
-      await dispatch(addToCart({ ...item, quantity: 1 })).unwrap();
-      await dispatch(removeFromWishlist(item._id));
-      toast.success("🛒 Added to cart!");
-    } catch (err) {
-      toast.error("❌ Failed to add to cart.");
-    }
-  };
+ const handleAddToCart = async (item) => {
+  if (!user) {
+    toast.error("⚠️ Please login first to add to cart");
+    return;
+  }
+
+  try {
+    await dispatch(
+      addToCart({
+        userId: user.id || user._id, // make sure this matches your backend
+        productId: item._id,
+        size: item.size || "Default", // optional handling
+        material: item.material || "Default", // optional handling
+        quantity: 1,
+      })
+    ).unwrap();
+
+    await dispatch(removeFromWishlist(item._id));
+    toast.success("🛒 Added to cart!");
+  } catch (err) {
+    console.error("Add to cart failed:", err);
+    toast.error("❌ Failed to add to cart.");
+  }
+};
+
 
   return (
     <Container className="my-5">

@@ -1,3 +1,4 @@
+// OrderStatusAdmin.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -11,8 +12,11 @@ import {
   CTableHeaderCell,
   CTableDataCell,
   CFormSelect,
-  CButton,
 } from "@coreui/react";
+
+// ✅ .env se URLs le rahe hain
+const ORDER_ALL_URL = import.meta.env.VITE_BASE_URL_ORDER_ALL;
+const ORDER_UPDATE_URL = import.meta.env.VITE_BASE_URL_ORDER_UPDATE;
 
 const OrderStatusAdmin = () => {
   const [orders, setOrders] = useState([]);
@@ -22,7 +26,7 @@ const OrderStatusAdmin = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/order/all"); 
+        const res = await axios.get(ORDER_ALL_URL);
         if (res.data.success) {
           setOrders(res.data.orders);
         }
@@ -37,7 +41,7 @@ const OrderStatusAdmin = () => {
   const handleStatusChange = async (orderId, productId, newStatus) => {
     try {
       setUpdating(true);
-      const res = await axios.put("http://localhost:8000/api/order/update-status", {
+      const res = await axios.put(ORDER_UPDATE_URL, {
         orderId,
         productId,
         status: newStatus,
@@ -47,7 +51,9 @@ const OrderStatusAdmin = () => {
         const updatedOrders = orders.map((order) => {
           if (order._id === orderId) {
             const updatedProducts = order.products.map((prod) =>
-              prod.productId._id === productId ? { ...prod, status: newStatus } : prod
+              prod.productId._id === productId
+                ? { ...prod, status: newStatus }
+                : prod
             );
             return { ...order, products: updatedProducts };
           }

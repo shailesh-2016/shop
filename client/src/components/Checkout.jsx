@@ -10,8 +10,7 @@ import {
   Container,
   Card,
 } from "react-bootstrap";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-hot-toast";
 
 const CheckoutPage = () => {
   const { cartItems } = useSelector((state) => state.cart);
@@ -56,26 +55,25 @@ const CheckoutPage = () => {
     if (!scriptLoaded) return toast.error("❌ Razorpay SDK failed to load");
 
     try {
-    const { data } = await axios.post(
-  `${import.meta.env.VITE_BASE_URL_PAYMENT}/checkout`,
-  { amount: totalAmount },
-  { withCredentials: true }
-);
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_BASE_URL_PAYMENT}/checkout`,
+        { amount: totalAmount },
+        { withCredentials: true }
+      );
 
-
-const ORDER_API = import.meta.env.VITE_BASE_URL_ORDER;
+      const ORDER_API = import.meta.env.VITE_BASE_URL_ORDER;
 
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY, 
+        key: import.meta.env.VITE_RAZORPAY_KEY,
         amount: totalAmount * 100,
         currency: "INR",
         name: "Arbuda Mobile",
         description: "Order Payment",
         order_id: data.order.id,
         handler: async (response) => {
-          try {
-             await axios.post(
-        `${ORDER_API}/create`,
+          toast.promise(
+            axios.post(
+              `${ORDER_API}/create`,
               {
                 userId: user?.id,
                 products,
@@ -86,13 +84,13 @@ const ORDER_API = import.meta.env.VITE_BASE_URL_ORDER;
                 razorpay_signature: response.razorpay_signature,
               },
               { withCredentials: true }
-            );
-
-            toast.success("✅ Payment Successful & Order Placed!");
-          } catch (err) {
-            toast.error("❌ Order Save Failed");
-            console.error(err);
-          }
+            ),
+            {
+              loading: "Placing order...",
+              success: "✅ Payment Successful & Order Placed!",
+              error: "❌ Order Save Failed",
+            }
+          );
         },
         prefill: {
           name: `${shipping.firstName} ${shipping.lastName}`,
@@ -102,14 +100,14 @@ const ORDER_API = import.meta.env.VITE_BASE_URL_ORDER;
         theme: { color: "#0d6efd" },
       };
 
-    const loaded = await loadRazorpayScript();
-if (!loaded) {
-  toast.error("Razorpay script failed");
-  return;
-}
-const razorpay = new window.Razorpay(options);
-razorpay.open();
+      const loaded = await loadRazorpayScript();
+      if (!loaded) {
+        toast.error("❌ Razorpay script failed to load again");
+        return;
+      }
 
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
     } catch (error) {
       console.error(error);
       toast.error("❌ Razorpay Order Creation Failed");
@@ -247,7 +245,6 @@ razorpay.open();
           </Card>
         </Col>
       </Row>
-
     </Container>
   );
 };

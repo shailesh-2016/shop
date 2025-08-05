@@ -12,7 +12,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import { updateCat, viewCat } from '../userSlice'
+import { updateCat, viewCat } from '../categorySlice'
 import Swal from 'sweetalert2'
 
 const UpdateCat = () => {
@@ -27,9 +27,9 @@ const UpdateCat = () => {
   const redirect = useNavigate()
   const dispatch = useDispatch()
   const { id } = useParams()
-  const { userList } = useSelector((state) => state.users)
+  const { categoryList } = useSelector((state) => state.category)
 
-  const singleCat = userList.find((cat) => cat._id === id)
+  const singleCat = categoryList.find((cat) => cat._id === id)
   const selectedImage = watch('cat_image')
 
   useEffect(() => {

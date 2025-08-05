@@ -148,14 +148,11 @@ const ProductDetail = () => {
       return;
     }
     try {
-      await axios.post(
-        `${import.meta.env.VITE_BASE_URL_PRODUCTS}/reduce-stock`,
-        {
-          productId: product._id,
-          selectedSize: size,
-          quantity: qty,
-        }
-      );
+     await axios.post(`${VITE_BASE_URL_ORDER}/create-order`, {
+  userId,
+  cartItems: [{ productId, size, material, quantity: 1 }],
+});
+
       toast.success("Order placed, stock updated!");
     } catch (error) {
       toast.error(

@@ -1,3 +1,4 @@
+// AddBanner.jsx
 import React, { useState } from "react";
 import {
   CCard,
@@ -8,6 +9,9 @@ import {
   CButton,
 } from "@coreui/react";
 import axios from "axios";
+
+// ✅ Banner API URL from .env
+const BANNER_API_URL = import.meta.env.VITE_BASE_URL_BANNER;
 
 const AddBanner = () => {
   const [link, setLink] = useState("");
@@ -21,10 +25,10 @@ const AddBanner = () => {
 
     const formData = new FormData();
     formData.append("link", link);
-formData.append("bannerImage", bannerImage);
+    formData.append("bannerImage", bannerImage);
 
     try {
-      const res = await axios.post("http://localhost:8000/api/banner", formData);
+      const res = await axios.post(BANNER_API_URL, formData);
       alert("✅ Banner added successfully!");
       setLink("");
       setBannerImage(null);

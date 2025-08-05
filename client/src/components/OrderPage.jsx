@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Container, Row, Col, Card, Spinner } from "react-bootstrap";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast"; // ✅ Using react-hot-toast instead
 
 const OrderSuccessPage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -13,7 +13,10 @@ const OrderSuccessPage = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/user/${user.id}`);
+      const res = await axios.get(`${BASE_URL}/user/${user.id}`, {
+        withCredentials: true,
+      });
+
       if (res.data.success) {
         setOrders(res.data.orders);
       } else {
@@ -39,7 +42,9 @@ const OrderSuccessPage = () => {
       <p>Here are your recent orders:</p>
 
       {loading ? (
-        <Spinner animation="border" />
+        <div className="d-flex justify-content-center my-5">
+          <Spinner animation="border" variant="primary" />
+        </div>
       ) : orders.length === 0 ? (
         <p>No recent orders found.</p>
       ) : (
@@ -50,10 +55,16 @@ const OrderSuccessPage = () => {
               <p>
                 <strong>Total Amount:</strong> ₹{order.totalAmount}
               </p>
+              {order.createdAt && (
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </p>
+              )}
               <p>
-                <strong>Shipping To:</strong> {order.shippingInfo.address},{" "}
-                {order.shippingInfo.city}, {order.shippingInfo.state} -{" "}
-                {order.shippingInfo.zipCode}
+                <strong>Shipping To:</strong> {order.shippingInfo?.address},{" "}
+                {order.shippingInfo?.city}, {order.shippingInfo?.state} -{" "}
+                {order.shippingInfo?.zip || "N/A"}
               </p>
               <hr />
               {order.products.map((item, index) => (
@@ -61,15 +72,15 @@ const OrderSuccessPage = () => {
                   <Col md={2}>
                     <img
                       src={item.productId?.product_images?.[0]}
-                      alt="product"
+                      alt={item.productId?.product_name || "Product"}
                       className="img-fluid rounded"
                     />
                   </Col>
                   <Col>
-                    <h6>{item.productId?.product_name}</h6>
+                    <h6>{item.productId?.product_name || "Unnamed Product"}</h6>
                     <p>Qty: {item.quantity}</p>
-                    <p>Size: {item.size}</p>
-                    <p>Material: {item.material}</p>
+                    <p>Size: {item.size || "-"}</p>
+                    <p>Material: {item.material || "-"}</p>
                     <p>Price: ₹{item.price}</p>
                     <p>
                       <strong>Status:</strong>{" "}
@@ -78,13 +89,13 @@ const OrderSuccessPage = () => {
                           item.status === "delivered"
                             ? "bg-success"
                             : item.status === "shipped"
-                            ? "bg-primary"
+                            ? "bg-info text-dark"
                             : item.status === "cancelled"
                             ? "bg-danger"
                             : "bg-warning text-dark"
                         }`}
                       >
-                        {item.status}
+                        {item.status || "Pending"}
                       </span>
                     </p>
                   </Col>

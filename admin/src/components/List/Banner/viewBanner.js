@@ -1,3 +1,4 @@
+// ViewBanners.jsx
 import React, { useEffect, useState } from "react";
 import {
   CCard,
@@ -14,13 +15,16 @@ import {
 } from "@coreui/react";
 import axios from "axios";
 
+// ✅ .env se base URL
+const BANNER_API_URL = import.meta.env.VITE_BASE_URL_BANNER;
+
 const ViewBanners = () => {
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchBanners = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/banner");
+      const res = await axios.get(BANNER_API_URL);
       setBanners(res.data.banners || []);
       setLoading(false);
     } catch (error) {
@@ -35,7 +39,7 @@ const ViewBanners = () => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:8000/api/banner/${id}`);
+      await axios.delete(`${BANNER_API_URL}/${id}`);
       setBanners((prev) => prev.filter((banner) => banner._id !== id));
       alert("✅ Banner deleted successfully");
     } catch (error) {

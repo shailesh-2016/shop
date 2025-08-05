@@ -1,32 +1,56 @@
 
 const Order = require("../model/order.model");
+const Product = require("../model/product.model");
+const Cart = require("../model/cart.model");
+
 
 exports.createOrder = async (req, res) => {
-
   try {
     const { userId, products, shippingInfo, totalAmount } = req.body;
 
-    // ✅ Check karo products aa rahe hain ya nahi
+    // Step 1: Check if products are passed
     if (!products || products.length === 0) {
       return res.status(400).json({ success: false, message: "Products missing" });
     }
 
+    // Step 2: Reduce product stock
+    for (const item of products) {
+      const product = await Product.findById(item.productId);
+      if (!product) {
+        return res.status(404).json({ success: false, message: "Product not found" });
+      }
+
+      if (product.stock < item.quantity) {
+        return res.status(400).json({ success: false, message: `Not enough stock for ${product.name}` });
+      }
+
+      product.stock -= item.quantity;
+      await product.save();
+    }
+
+    // Step 3: Create order
     const newOrder = new Order({
       userId,
       products,
       shippingInfo,
       totalAmount,
-      paymentStatus: "pending", // Default status
+      paymentStatus: "pending", // You can change to "paid" after payment integration
     });
 
     await newOrder.save();
 
-    res.status(201).json({ success: true, order: newOrder });
+    // Step 4: Empty user's cart
+    await Cart.findOneAndDelete({ userId });
+
+    // Step 5: Return success response
+    res.status(201).json({ success: true, order: newOrder, message: "Order placed successfully" });
+
   } catch (error) {
     console.error("Order Save Error:", error);
     res.status(500).json({ success: false, message: "Failed to create order" });
   }
 };
+
 
 exports.getUserOrders = async (req, res) => {
   try {

@@ -6,12 +6,12 @@ import {
   CCardHeader,
 } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
-import { delCat, viewCat } from '../userSlice'
+import { delCat, viewCat } from '../categorySlice'
 import Swal from 'sweetalert2'
 import { NavLink } from 'react-router-dom'
 
 const ViewCategory = () => {
-  const { userList } = useSelector((state) => state.users)
+  const { categoryList } = useSelector((state) => state.category)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -52,8 +52,8 @@ const ViewCategory = () => {
               </tr>
             </thead>
             <tbody>
-              {userList.length > 0 ? (
-                userList.map((category, index) => (
+              {categoryList.length > 0 ? (
+                categoryList.map((category, index) => (
                   <tr key={category._id}>
                     <td>{index + 1}</td>
 

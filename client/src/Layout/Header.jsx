@@ -43,30 +43,33 @@ const Header = () => {
     <>
       {/* --- Announcement Bar (Top Navbar) --- */}
       <div className="announcement-bar py-2 text-center bg-dark text-white d-none d-md-block">
-        {" "}
-        {/* d-none d-md-block for mobile hide */}
-        <div className="container-fluid d-flex justify-content-between align-items-center">
-          <p className="mb-0 mx-auto">
-            <small>Free shipping on all orders above ₹499</small>
-          </p>
-          <div className="d-flex gap-3">
-            <a
-              href="tel:+918300083000"
-              className="text-white text-decoration-none d-flex align-items-center"
-            >
-              <i className="bi bi-telephone-fill me-1"></i>{" "}
-              <small>+91 83000 83000</small>
-            </a>
-            <a
-              href="mailto:kukujewel@gmail.com"
-              className="text-white text-decoration-none d-flex align-items-center"
-            >
-              <i className="bi bi-envelope-fill me-1"></i>{" "}
-              <small>kukujewel@gmail.com</small>
-            </a>
-          </div>
-        </div>
-      </div>
+  {/* d-none d-md-block for mobile hide */}
+  <div className="container-fluid d-flex justify-content-between align-items-center">
+    {/* LEFT: Shipping message */}
+    <p className="mb-0">
+      <small>Free shipping on all orders above ₹499</small>
+    </p>
+
+    {/* RIGHT: Contact info */}
+    <div className="d-flex gap-3">
+      <a
+        href="tel:+918300083000"
+        className="text-white text-decoration-none d-flex align-items-center"
+      >
+        <i className="bi bi-telephone-fill me-1"></i>
+        <small>+91 83000 83000</small>
+      </a>
+      <a
+        href="mailto:kukujewel@gmail.com"
+        className="text-white text-decoration-none d-flex align-items-center"
+      >
+        <i className="bi bi-envelope-fill me-1"></i>
+        <small>kukujewel@gmail.com</small>
+      </a>
+    </div>
+  </div>
+</div>
+
 
       {/* --- Main Navbar (Logo, Nav Links, Icons) --- */}
       <header className="main-header shadow-sm bg-white">
