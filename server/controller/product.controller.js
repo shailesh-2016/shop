@@ -3,52 +3,58 @@ const Product = require("../model/product.model");
 // ✅ CREATE PRODUCT with multiple image upload (from Cloudinary)
 // controllers/product.controller.js
 
-exports.createOrder = async (req, res) => {
+// ✅ Create Product Controller
+exports.createProduct = async (req, res) => {
   try {
-    const { cartItems, totalAmount, shippingInfo } = req.body;
-    const userId = req.user._id;
+    const {
+      product_name,
+      product_description,
+      price,
+      discount_price,
+      material,
+      quantity,
+      category,
+      sizeStock,
+    } = req.body;
 
-    // 1. Reduce product quantity
-    for (let item of cartItems) {
-      const product = await Product.findById(item.productId);
-      if (!product) {
-        return res.status(404).json({ message: "Product not found" });
-      }
+    // ✅ Handle Cloudinary image upload from multer
+    const product_images = req.files.map((file) => file.path);
 
-      if (product.quantity < item.quantity) {
-        return res.status(400).json({ message: `Insufficient stock for ${product.product_name}` });
-      }
-
-      product.quantity -= item.quantity;
-      await product.save();
+    // ✅ Parse sizeStock if it's a string
+    let parsedSizeStock = [];
+    if (typeof sizeStock === "string") {
+      parsedSizeStock = JSON.parse(sizeStock);
+    } else {
+      parsedSizeStock = sizeStock;
     }
 
-    // 2. Create new order
-    const newOrder = new Order({
-      userId,
-      items: cartItems,
-      totalAmount,
-      shippingInfo,
+    const newProduct = new Product({
+      product_name,
+      product_description,
+      price,
+      discount_price,
+      material,
+      quantity,
+      category,
+      product_images,
+      sizeStock: parsedSizeStock,
     });
 
-    await newOrder.save();
+    await newProduct.save();
 
-    // 3. Remove purchased items from user's cart
-    await Cart.deleteMany({ userId });
-
-    return res.status(201).json({
+    res.status(201).json({
       success: true,
-      message: "Order placed successfully",
-      order: newOrder,
+      message: "✅ Product created successfully",
+      product: newProduct,
     });
-  } catch (err) {
-    console.error("Create Order Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-    });
+  } catch (error) {
+    console.error("❌ Create product error:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to create product" });
   }
 };
+
 
 
 exports.getAllProducts = async (req, res) => {
