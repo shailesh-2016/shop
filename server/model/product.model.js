@@ -38,7 +38,6 @@ const productSchema = new mongoose.Schema(
     price: Number,
     discount_price: Number,
     material: String,
-    quantity: Number,
     category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
 
     // ✅ New sizeStock structure

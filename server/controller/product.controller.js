@@ -12,7 +12,6 @@ exports.createProduct = async (req, res) => {
       price,
       discount_price,
       material,
-      quantity,
       category,
       sizeStock,
     } = req.body;
@@ -34,7 +33,6 @@ exports.createProduct = async (req, res) => {
       price,
       discount_price,
       material,
-      quantity,
       category,
       product_images,
       sizeStock: parsedSizeStock,

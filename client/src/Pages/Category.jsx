@@ -31,8 +31,7 @@ const Category = () => {
   }, []);
 
   const handleCategoryClick = (categoryId) => {
-    navigate(`/category/${categoryId}`);
-  };
+navigate(`/categorypr/${categoryId}`);  };
 
   return (
     <>

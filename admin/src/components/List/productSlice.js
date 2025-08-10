@@ -6,9 +6,14 @@ const Product_URL = import.meta.env.VITE_BASE_URL_PRODUCTS  // ✅ From .env
 
 // ➕ Add Product
 export const addPro = createAsyncThunk('product/addPro', async (data) => {
-  const res = await axios.post(Product_URL, data)
+  const res = await axios.post(Product_URL, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    }
+  })
   return res.data
 })
+
 
 // 👁 View All Products
 export const viewPro = createAsyncThunk('product/viewPro', async () => {

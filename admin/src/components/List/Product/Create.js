@@ -25,9 +25,7 @@ const Create = () => {
   const navigate = useNavigate()
   const { categoryList } = useSelector((state) => state.category)
 
-  const [sizeStock, setSizeStock] = useState(
-    sizeOptions.map((sz) => ({ size: sz, stock: 0 }))
-  )
+  const [sizeStock, setSizeStock] = useState(sizeOptions.map((sz) => ({ size: sz, stock: 0 })))
 
   const {
     register,
@@ -51,7 +49,7 @@ const Create = () => {
       const formData = new FormData()
 
       // Images
-      for (let i = 0; i < data.product_images.length; i++) {
+      for (let i = 0; i < data.product_images?.length; i++) {
         formData.append('product_images', data.product_images[i])
       }
 
@@ -61,23 +59,18 @@ const Create = () => {
       formData.append('price', data.price)
       formData.append('discount_price', data.discount_price)
       formData.append('material', data.material)
-      formData.append('quantity', data.quantity)
       formData.append('category', data.category)
 
       // ✅ Size-wise stock
       formData.append('sizeStock', JSON.stringify(sizeStock))
 
-      await dispatch(addPro(formData))
-      reset()
-      setSizeStock(sizeOptions.map((sz) => ({ size: sz, stock: 0 })))
-
-      Swal.fire({
-        position: 'top-center',
-        icon: 'success',
-        title: '✅ Product Created Successfully',
-        showConfirmButton: false,
-        timer: 1500,
-      })
+      const res = await dispatch(addPro(formData)).unwrap()
+      if (res.success) {
+        Swal.fire({ icon: 'success', title: '✅ Product Created Successfully', timer: 1500 })
+        reset()
+      } else {
+        Swal.fire({ icon: 'error', title: '❌ Failed to Create Product' })
+      }
     } catch (err) {
       console.error('Product submit error:', err)
     }
@@ -137,8 +130,6 @@ const Create = () => {
               <CFormInput type="number" {...register('discount_price')} />
             </div>
 
-         
-
             {/* ✅ Size & Stock */}
             <div className="mb-3">
               <CFormLabel>Size & Stock</CFormLabel>
@@ -155,8 +146,6 @@ const Create = () => {
                 </div>
               ))}
             </div>
-
-         
 
             {/* Images */}
             <div className="mb-3">

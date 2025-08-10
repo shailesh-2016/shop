@@ -59,10 +59,7 @@ exports.login = async (req, res) => {
   }
 };
 
-// ✅ Logout
-exports.logoutUser = (req, res) => {
-  return res.status(200).json({ success: true, message: "Logged out successfully!" });
-};
+
 
 // ✅ Middleware
 exports.authMiddleware = (req, res, next) => {
@@ -103,3 +100,14 @@ exports.googleLogin = async (req, res) => {
     res.status(500).json({ success: false, message: "Google login failed" });
   }
 };
+
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, "name email _id"); // sirf necessary fields
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to fetch users" });
+  }
+};
+

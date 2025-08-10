@@ -55,12 +55,16 @@ exports.createOrder = async (req, res) => {
 exports.getUserOrders = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const orders = await Order.find({ userId }).populate("products.productId");
+    const orders = await Order.find({ userId })
+      .populate("products.productId")
+      .sort({ createdAt: -1 });
     res.status(200).json({ success: true, orders });
   } catch (error) {
     res.status(500).json({ success: false, message: "Failed to fetch orders" });
   }
 };
+
+
 
 
 // ✅ Update product status in a specific order

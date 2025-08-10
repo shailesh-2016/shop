@@ -54,7 +54,7 @@ const CartPage = () => {
 
   const subtotal = cartItems.reduce((acc, item) => {
     const product = item?.productId;
-    const price = product?.discount_price || product?.price || 0;
+    const price =  product?.price || 0;
     const quantity = item?.quantity || 0;
     return acc + price * quantity;
   }, 0);
@@ -116,11 +116,11 @@ const CartPage = () => {
                         </td>
                         <td>{item.productId?.product_name}</td>
                         <td>{item.quantity}</td>
-                        <td>₹{item.productId?.discount_price || item.productId?.price}</td>
+                        <td>₹{item.productId?.price}</td>
                         <td>
                           ₹
                           {(
-                            (item.productId?.discount_price || item.productId?.price) *
+                            (item.productId?.price) *
                             item.quantity
                           ).toFixed(2)}
                         </td>

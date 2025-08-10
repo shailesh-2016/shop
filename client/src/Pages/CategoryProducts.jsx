@@ -119,7 +119,6 @@ const CategoryProducts = () => {
                       <h6 className="card-title fw-semibold">{product.product_name}</h6>
                     </NavLink>
                     {/* Product Material (optional, can be added if needed) */}
-                    {product.material && <p className="product-material">{product.material}</p>}
 
                     {/* Price Display with discount logic */}
                     {product.discount_price ? (
