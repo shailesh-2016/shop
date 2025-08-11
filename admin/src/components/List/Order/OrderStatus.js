@@ -14,7 +14,10 @@ import {
   CButton,
 } from "@coreui/react";
 
-const USERS_URL = import.meta.env.VITE_BASE_URL_USERS_ALL;
+const USERS_URL =
+  import.meta.env.MODE === "development"
+    ? "http://localhost:8000/api/auth/all"
+    : "https://shop-ogna.onrender.com/api/auth/all";
 const USER_ORDERS_URL = import.meta.env.VITE_BASE_URL_ORDER_BY_USER;
 const ORDER_UPDATE_URL = import.meta.env.VITE_BASE_URL_ORDER_UPDATE;
 
@@ -32,7 +35,7 @@ const OrderStatusAdmin = () => {
       }
     });
   }, []);
-  console.log("reesssssss",users)
+  // console.log("reesssssss",users)
 
   // ✅ Fetch orders for selected user
  const fetchOrdersForUser = (userId) => {

@@ -9,6 +9,8 @@ import "swiper/css/navigation";
 import "swiper/css/autoplay";
 import "../Pages/category.css";
 import { useNavigate } from "react-router-dom";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const Category = () => {
   const [categories, setCategories] = useState([]);
@@ -31,13 +33,16 @@ const Category = () => {
   }, []);
 
   const handleCategoryClick = (categoryId) => {
-navigate(`/categorypr/${categoryId}`);  };
+    navigate(`/categorypr/${categoryId}`);
+  };
 
   return (
     <>
       <div className="container my-5 category-section">
         <div className="text-center mb-5 section-header">
-          <h1 className="fw-bold display-5 mb-3">Explore Our <span className="text-primary-custom">Exquisite Categories</span></h1> {/* Changed to text-primary-custom */}
+          <h1 className="fw-bold display-5 mb-3">
+            Explore Our <span className="text-primary-custom">Exquisite Categories</span>
+          </h1>
           <p className="lead text-muted mx-auto">
             Discover a wide range of stunning jewelry, meticulously organized for your convenience. Find your perfect piece with ease!
           </p>
@@ -45,7 +50,7 @@ navigate(`/categorypr/${categoryId}`);  };
 
         {loading ? (
           <div className="text-center py-5">
-            <div className="spinner-border text-primary-custom" role="status"> {/* Changed to text-primary-custom */}
+            <div className="spinner-border text-primary-custom" role="status">
               <span className="visually-hidden">Loading categories...</span>
             </div>
             <p className="mt-3 text-muted">Fetching our beautiful collections...</p>
@@ -93,12 +98,14 @@ navigate(`/categorypr/${categoryId}`);  };
                   className="category-card text-center p-3 rounded-4 bg-white shadow-sm h-100 d-flex flex-column align-items-center justify-content-center hover-effect"
                   onClick={() => handleCategoryClick(item._id)}
                 >
-                  <img
+                  <LazyLoadImage
                     src={item.cat_image}
                     alt={item.cat_name}
+                    effect="blur"
+                    width="100%"
+                    height="140px"
                     className="img-fluid rounded-3 category-img mb-3"
                     style={{
-                      width: "100%",
                       height: "140px",
                       objectFit: "cover",
                     }}

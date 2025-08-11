@@ -74,9 +74,10 @@ const Header = () => {
       {/* --- Main Navbar (Logo, Nav Links, Icons) --- */}
       <header className="main-header shadow-sm bg-white">
         <nav className="navbar navbar-expand-lg navbar-light container">
-          <NavLink to="/" className="navbar-brand">
-            <img src={logo} alt="Kuku Jewel Logo" className="header-logo" />
-          </NavLink>
+         <NavLink to="/" className="navbar-brand logo-text">
+  KUKU
+</NavLink>
+
 
           {/* Toggler for mobile */}
           <button

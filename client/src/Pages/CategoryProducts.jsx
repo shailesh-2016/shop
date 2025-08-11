@@ -3,6 +3,8 @@ import { useNavigate, useParams, NavLink } from "react-router-dom"; // NavLink i
 import axios from "axios";
 import { Heart, ShoppingCart } from "lucide-react"; // Icons import kiye
 import "../Pages/product.css"; // Ensure this CSS file is used
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const CategoryProducts = () => {
   const { id } = useParams();
@@ -16,9 +18,9 @@ const CategoryProducts = () => {
 
   // Function to toggle wishlist status
   const toggleWishlist = (productId) => {
-    setWishlistActive(prev => ({
+    setWishlistActive((prev) => ({
       ...prev,
-      [productId]: !prev[productId]
+      [productId]: !prev[productId],
     }));
   };
 
@@ -34,7 +36,11 @@ const CategoryProducts = () => {
         setProducts(res.data);
 
         if (res.data.length > 0) {
-          setCategoryName(res.data[0].categoryName || res.data[0].category?.name || "Category Products");
+          setCategoryName(
+            res.data[0].categoryName ||
+              res.data[0].category?.name ||
+              "Category Products"
+          );
         } else {
           setCategoryName(`Category: ${id}`);
         }
@@ -52,7 +58,9 @@ const CategoryProducts = () => {
   }, [id]);
 
   return (
-    <div className="category-products-section py-5"> {/* Added section class */}
+    <div className="category-products-section py-5">
+      {" "}
+      {/* Added section class */}
       <div className="container">
         {/* Section Header */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 section-header">
@@ -75,7 +83,9 @@ const CategoryProducts = () => {
               <div className="spinner-border text-primary-custom" role="status">
                 <span className="visually-hidden">Loading products...</span>
               </div>
-              <p className="mt-3 text-muted">Fetching {categoryName} items...</p>
+              <p className="mt-3 text-muted">
+                Fetching {categoryName} items...
+              </p>
             </div>
           ) : error ? (
             <div className="col-12 text-center text-danger py-5">
@@ -87,20 +97,29 @@ const CategoryProducts = () => {
             </p>
           ) : (
             products.map((product) => (
-              <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={product._id}>
-                <div className="card product-card h-100"> {/* Replaced card-hover-group with product-card */}
+              <div
+                className="col-12 col-sm-6 col-md-4 col-lg-3"
+                key={product._id}
+              >
+                <div className="card product-card h-100">
+                  {" "}
+                  {/* Replaced card-hover-group with product-card */}
                   <div className="position-relative product-img-wrapper">
                     <NavLink to={`/details/${product._id}`}>
-                      <img
+                      <LazyLoadImage
                         src={product.product_images?.[0]}
                         alt={product.product_name}
-                        className="card-img-top product-img" // Added product-img class
+                        className="card-img-top product-img"
+                        effect="blur"
                       />
                     </NavLink>
+
                     <div className="product-actions">
                       {/* Wishlist Button - using icon-btn and Heart lucide icon */}
                       <button
-                        className={`icon-btn heart-btn ${wishlistActive[product._id] ? 'active' : ''}`}
+                        className={`icon-btn heart-btn ${
+                          wishlistActive[product._id] ? "active" : ""
+                        }`}
                         aria-label="Add to wishlist"
                         onClick={() => toggleWishlist(product._id)}
                       >
@@ -115,21 +134,28 @@ const CategoryProducts = () => {
                     {/* <span className="badge new-arrival-badge">New</span> */}
                   </div>
                   <div className="card-body d-flex flex-column">
-                    <NavLink to={`/details/${product._id}`} className="product-title-link">
-                      <h6 className="card-title fw-semibold">{product.product_name}</h6>
+                    <NavLink
+                      to={`/details/${product._id}`}
+                      className="product-title-link"
+                    >
+                      <h6 className="card-title fw-semibold">
+                        {product.product_name}
+                      </h6>
                     </NavLink>
                     {/* Product Material (optional, can be added if needed) */}
 
                     {/* Price Display with discount logic */}
                     {product.discount_price ? (
                       <p className="product-price">
-                        ₹{product.discount_price.toLocaleString('en-IN')}
+                        ₹{product.discount_price.toLocaleString("en-IN")}
                         <span className="text-muted text-decoration-line-through">
-                          ₹{product.price.toLocaleString('en-IN')}
+                          ₹{product.price.toLocaleString("en-IN")}
                         </span>
                       </p>
                     ) : (
-                      <p className="product-price">₹{product.price.toLocaleString('en-IN')}</p>
+                      <p className="product-price">
+                        ₹{product.price.toLocaleString("en-IN")}
+                      </p>
                     )}
 
                     {/* View Details Button */}

@@ -5,8 +5,12 @@ import Festive from "./Festive";
 import "../Pages/group-card.css";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addToWishlist } from "../redux/wish-list/listSlice"; // ✅ Add thunk
+import { addToWishlist } from "../redux/wish-list/listSlice";
 import toast from "react-hot-toast";
+
+// ✅ Lazy load import
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const Arrival = () => {
   const [products, setProducts] = useState([]);
@@ -35,7 +39,6 @@ const Arrival = () => {
     fetchNewArrivals();
   }, []);
 
-  // ✅ Handle wishlist add
   const handleAddToWishlist = (product) => {
     if (!user) {
       toast.error("Please login to add to wishlist");
@@ -90,14 +93,17 @@ const Arrival = () => {
                 <div className="card product-card shadow-lg h-100 border-0 rounded-4 overflow-hidden">
                   <div className="position-relative product-img-wrapper">
                     <NavLink to={`/details/${product._id}`}>
-                      <img
+                      <LazyLoadImage
                         src={product.product_images?.[0]}
                         alt={product.product_name}
+                        effect="blur"
                         className="card-img-top product-img"
+                        width="100%"
+                        height="auto"
+                        style={{ objectFit: "cover" }}
                       />
                     </NavLink>
                     <div className="product-actions">
-                      {/* ✅ Heart Click Adds to Wishlist */}
                       <button
                         className="icon-btn heart-btn"
                         aria-label="Add to wishlist"

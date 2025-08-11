@@ -9,7 +9,7 @@ import {
   removeFromWishlist,
   getWishlist,
 } from "../redux/wish-list/listSlice";
-import toast, { Toaster } from "react-hot-toast";  // ✅ Changed import
+import toast, { Toaster } from "react-hot-toast";
 
 const shuffleArray = (array) => {
   return array
@@ -135,8 +135,8 @@ const ProductPage = () => {
 
   return (
     <div className="product-page-wrapper container-fluid py-5">
-      <Toaster position="top-right" reverseOrder={false} /> {/* ✅ Hot toast container */}
-      
+      <Toaster position="top-right" reverseOrder={false} />{" "}
+      {/* ✅ Hot toast container */}
       <div className="d-flex justify-content-between align-items-center mb-4 px-3 px-md-0">
         <div>
           <h2 className="fw-bold display-5 mb-1">
@@ -162,10 +162,11 @@ const ProductPage = () => {
           Filters
         </button>
       </div>
-
       <div className="row g-4">
         {/* Sidebar Filters */}
-        <div className={`col-md-3 product-sidebar ${isSidebarOpen ? "open" : ""}`}>
+        <div
+          className={`col-md-3 product-sidebar ${isSidebarOpen ? "open" : ""}`}
+        >
           <div className="sidebar-header d-flex justify-content-between align-items-center d-md-none p-3 border-bottom">
             <h5 className="mb-0 fw-bold">Filters</h5>
             <button
@@ -186,8 +187,17 @@ const ProductPage = () => {
 
             {/* Categories */}
             <div className="filter-group mb-4 pb-3 border-bottom">
-              <h6 className="fw-bold mb-3 text-primary-custom-dark">Categories</h6>
-              {["Rings", "Earrings", "Necklaces", "Bracelets", "Bangles", "Pendants"].map((cat) => (
+              <h6 className="fw-bold mb-3 text-primary-custom-dark">
+                Categories
+              </h6>
+              {[
+                "Rings",
+                "Earrings",
+                "Necklaces",
+                "Bracelets",
+                "Bangles",
+                "Pendants",
+              ].map((cat) => (
                 <div className="form-check custom-checkbox mb-2" key={cat}>
                   <input
                     className="form-check-input"
@@ -205,7 +215,9 @@ const ProductPage = () => {
 
             {/* Price */}
             <div className="filter-group mb-4 pb-3 border-bottom">
-              <h6 className="fw-bold mb-3 text-primary-custom-dark">Price Range</h6>
+              <h6 className="fw-bold mb-3 text-primary-custom-dark">
+                Price Range
+              </h6>
               <div className="d-flex gap-2 mb-2">
                 <input
                   type="number"
@@ -226,21 +238,25 @@ const ProductPage = () => {
 
             {/* Material */}
             <div className="filter-group mb-0">
-              <h6 className="fw-bold mb-3 text-primary-custom-dark">Material</h6>
-              {["18K Gold", "22K Gold", "Rose Gold", "White Gold"].map((mat) => (
-                <div className="form-check custom-checkbox mb-2" key={mat}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id={`mat-${mat}`}
-                    checked={filters.materials.includes(mat)}
-                    onChange={() => handleCheckboxChange("materials", mat)}
-                  />
-                  <label className="form-check-label" htmlFor={`mat-${mat}`}>
-                    {mat}
-                  </label>
-                </div>
-              ))}
+              <h6 className="fw-bold mb-3 text-primary-custom-dark">
+                Material
+              </h6>
+              {["18K Gold", "22K Gold", "Rose Gold", "White Gold"].map(
+                (mat) => (
+                  <div className="form-check custom-checkbox mb-2" key={mat}>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id={`mat-${mat}`}
+                      checked={filters.materials.includes(mat)}
+                      onChange={() => handleCheckboxChange("materials", mat)}
+                    />
+                    <label className="form-check-label" htmlFor={`mat-${mat}`}>
+                      {mat}
+                    </label>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </div>
@@ -252,12 +268,20 @@ const ProductPage = () => {
               <div className="spinner-border text-primary-custom" role="status">
                 <span className="visually-hidden">Loading products...</span>
               </div>
-              <p className="mt-3 text-muted">Fetching our beautiful jewelry collection...</p>
+              <p className="mt-3 text-muted">
+                Fetching our beautiful jewelry collection...
+              </p>
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="alert alert-info text-center py-4 my-5" role="alert">
+            <div
+              className="alert alert-info text-center py-4 my-5"
+              role="alert"
+            >
               <h5 className="alert-heading">No Products Found!</h5>
-              <p className="mb-0">Looks like your current filters don't match any products. Try adjusting them.</p>
+              <p className="mb-0">
+                Looks like your current filters don't match any products. Try
+                adjusting them.
+              </p>
               <button
                 className="btn btn-link text-primary-custom mt-2"
                 onClick={clearAllFilters}
@@ -270,19 +294,25 @@ const ProductPage = () => {
               {filteredProducts.map((product) => (
                 <div className="col d-flex" key={product._id}>
                   <div className="card product-card h-100 border-0 rounded-3 shadow-sm overflow-hidden">
-                    <Link to={`/details/${product._id}`} className="product-image-link">
+                    <Link
+                      to={`/details/${product._id}`}
+                      className="product-image-link"
+                    >
                       <div className="product-image-wrapper">
                         <img
                           src={product.product_images?.[0]}
-                          className="card-img-top product-img"
                           alt={product.product_name}
+                          className="card-img-top product-img"
+                          loading="lazy" // ✅ basic browser lazy loading
                         />
                       </div>
                     </Link>
 
                     {/* ❤️ Wishlist Button */}
                     <button
-                      className={`wishlist-btn ${isInWishlist(product._id) ? "active" : ""}`}
+                      className={`wishlist-btn ${
+                        isInWishlist(product._id) ? "active" : ""
+                      }`}
                       onClick={() => toggleWishlist(product)}
                       aria-label={
                         isInWishlist(product._id)
@@ -298,7 +328,10 @@ const ProductPage = () => {
                     </button>
 
                     <div className="card-body text-center d-flex flex-column justify-content-between">
-                      <Link to={`/details/${product._id}`} className="product-title-link">
+                      <Link
+                        to={`/details/${product._id}`}
+                        className="product-title-link"
+                      >
                         <h6 className="card-title fw-semibold text-dark mb-2">
                           {product.product_name}
                         </h6>

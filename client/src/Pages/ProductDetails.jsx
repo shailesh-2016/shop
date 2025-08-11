@@ -21,6 +21,8 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./productDetails.css";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -217,17 +219,21 @@ const ProductDetail = () => {
             />
           </div>
           <div className="thumbnail-gallery d-flex gap-2 flex-wrap justify-content-center justify-content-md-start">
-            {product.product_images.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`thumbnail-${index}`}
-                className={`img-thumbnail thumbnail-image ${
-                  mainImage === img ? "active-thumbnail" : ""
-                }`}
-                onClick={() => setMainImage(img)}
-              />
-            ))}
+           {product.product_images.map((img, index) => (
+  <LazyLoadImage
+    key={index}
+    src={img}
+    alt={`thumbnail-${index}`}
+    effect="blur"
+    height="80px" // apne thumbnail ka original height rakh
+    width="80px"  // apne thumbnail ka original width rakh
+    className={`img-thumbnail thumbnail-image ${
+      mainImage === img ? "active-thumbnail" : ""
+    }`}
+    onClick={() => setMainImage(img)}
+    style={{ objectFit: "cover" }}
+  />
+))}
           </div>
         </Col>
 
@@ -362,7 +368,7 @@ const ProductDetail = () => {
             >
               ADD TO CART
             </Button>
-            <Button
+            {/* <Button
               variant="outline-primary"
               size="lg"
               className="buy-now-btn"
@@ -370,7 +376,7 @@ const ProductDetail = () => {
               disabled={product.sizeStock?.every((s) => s.stock === 0)}
             >
               BUY NOW
-            </Button>
+            </Button> */}
           </div>
         </Col>
       </Row>
