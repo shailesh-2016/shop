@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, NavLink } from "react-router-dom"; // NavLink import kiya
 import axios from "axios";
 import { Heart, ShoppingCart } from "lucide-react"; // Icons import kiye
-import "../Pages/product.css"; // Ensure this CSS file is used
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
+import "../Pages/CategoryProducts.css"; // Ensure this CSS file is used
+
 
 const CategoryProducts = () => {
   const { id } = useParams();
@@ -106,11 +105,11 @@ const CategoryProducts = () => {
                   {/* Replaced card-hover-group with product-card */}
                   <div className="position-relative product-img-wrapper">
                     <NavLink to={`/details/${product._id}`}>
-                      <LazyLoadImage
+                      <img
                         src={product.product_images?.[0]}
                         alt={product.product_name}
                         className="card-img-top product-img"
-                        effect="blur"
+                        loading="lazy"
                       />
                     </NavLink>
 
